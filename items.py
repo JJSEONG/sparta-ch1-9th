@@ -29,7 +29,7 @@ def get_items():
     else:
         item_list = get_items_by_store(store, sort_key, last_id)
 
-    return jsonify({'items': dumps(item_list)})
+    return jsonify({'items': dumps(item_list), "length": len(item_list)})
 
 
 def get_items_all(key, last_id, search_keyword):
