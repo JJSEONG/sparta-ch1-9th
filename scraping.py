@@ -2,18 +2,32 @@ import schedule
 import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 from time import sleep
+from pymongo import MongoClient
+import secret
 
-driver = webdriver.Chrome('./chromedriver')
-options = webdriver.ChromeOptions()
-options.add_argument('headless')
+# MongoDBConnection
+client = MongoClient(secret.mongo_db_key)
+db = client.dbsparta
+itemCollection = db.items
 
 
-def scrap_gs():
+def init():
+    options = webdriver.ChromeOptions()
+    options.add_argument('headless')
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    sleep(3)
+
+    return driver
+
+
+def scrap_gs(driver):
     url = "http://gs25.gsretail.com/gscvs/ko/products/youus-freshfood"
     driver.get(url)
     sleep(2)
-    driver.execute_script("searchNewDateSort.click();")
+    driver.execute_script("searchSortCick('searchNewDateSort');")
     sleep(2)
 
     item_list = []
@@ -35,15 +49,15 @@ def scrap_gs():
                 "store": "gs",
                 "image": image,
                 "title": title,
-                "price": price
+                "price": price,
+                "like": 0
             })
 
         sleep(1)
-        driver.close()
     return item_list
 
 
-def scrap_s11():
+def scrap_s11(driver):
     url = "https://www.7-eleven.co.kr/product/bestdosirakList.asp"
     driver.get(url)
     sleep(2)
@@ -65,14 +79,14 @@ def scrap_s11():
                 "store": "s11",
                 "image": "https://www.7-eleven.co.kr" + image,
                 "title": title,
-                "price": 0
+                "price": 0,
+                "like": 0
             })
     sleep(1)
-    driver.close()
     return item_list
 
 
-def scrap_cu():
+def scrap_cu(driver):
     item_list = []
     for i in range(1, 5):
         url = "https://cu.bgfretail.com/product/product.do?category=product&depth2=4&depth3=%d" % i
@@ -94,21 +108,24 @@ def scrap_cu():
                 "store": "cu",
                 "image": "http:" + image,
                 "title": title,
-                "price": price
+                "price": price,
+                "like": 0
             })
         sleep(1)
-        driver.close()
     return item_list
 
 
 def scrap_items():
-    scrap_gs()
-    scrap_s11()
-    scrap_cu()
+    driver = init()
+    itemCollection.insert_many(scrap_gs(driver))
+    itemCollection.insert_many(scrap_s11(driver))
+    itemCollection.insert_many(scrap_cu(driver))
+    driver.close()
 
 
 def scheduling():
-    schedule.every(1).day.at("24:00:00").do(scrap_items())
+    scrap_items()
+    schedule.every(1).monday.at("00:00").do(scrap_items)
 
     while True:
         schedule.run_pending()
