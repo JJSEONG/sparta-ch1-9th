@@ -1,22 +1,9 @@
-from flask import Flask, render_template, request, jsonify
-from pymongo import MongoClient
-import secret
-
-# DB key 노출을 막기 위한 간단 설정!
-#    - DB 설정을 위해서 root 디렉터리에 secret.py를 생성
-#    - mongo_db_key = "주소" 입력
-
-key_list = {
-    'MongoKey': secret.mongo_db_key
-}
-
-# MongoDBConnection
-client = MongoClient(key_list['MongoKey'])
-db = client.dbsparta
-todoCollection = db.todolist
-pkCollection = db.pks
+from flask import Flask, render_template
+import items
 
 app = Flask(__name__)
+
+app.register_blueprint(items.blue_items)
 
 
 @app.route('/')
@@ -25,4 +12,4 @@ def home():
 
 
 if __name__ == '__main__':
-    app.run('0.0.0.0', port=8002, debug=True)
+    app.run('0.0.0.0', port=8000, debug=True)

@@ -13,11 +13,10 @@ client = MongoClient(secret.mongo_db_key)
 db = client.dbsparta
 itemCollection = db.items
 
-
 def init():
     options = webdriver.ChromeOptions()
     options.add_argument('headless')
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     sleep(3)
 
     return driver

@@ -12,6 +12,9 @@
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous"></script>
 
+    <script src="/static/app.js"></script>
+    <script src="/static/loading.js"></script>
+    <link href="/static/loading.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
     <title>함무바라 법전</title>
     <style>
@@ -31,7 +34,6 @@
             background-color: gray;
             margin-bottom: 30px;
         }
-
         .img-banner .dots {
             position: absolute;
             left: 50%;
@@ -119,7 +121,7 @@
             width: 120px;
             text-align: center;
         }
-
+      
         .item-list .list-nav li:hover {
             background-color: #000;
             border: 1px solid #fff;
@@ -133,7 +135,8 @@
             flex-wrap: wrap;
         }
 
-        .item-list .items .item {
+
+        .item-list .items .item, .skeleton {
             position: relative;
             width: 240px;
             height: 240px;
@@ -148,6 +151,12 @@
         .item-list .items .item img {
             width: 160px;
             height: 160px;
+        }
+
+        .skeleton__image {
+            width: 160px;
+            height: 160px;
+            animation: skeleton-gradient 3s linear infinite;
         }
 
         .item-list .items .item .item-info {
@@ -169,178 +178,72 @@
             font-size: 12px;
         }
 
+        .item-list > #stores > .pick {
+            background-color: goldenrod;
+        }
+
+        .item-list > #sort > .pick {
+            background-color: goldenrod;
+        }
+
+        @keyframes skeleton-gradient {
+            0% {
+                background: rgb(212, 212, 212);
+            }
+            50% {
+                background: rgb(128, 128, 128);
+            }
+            100% {
+                background: rgb(212, 212, 212);
+            }
+        }
+
     </style>
     <script>
-
         $(document).ready(function () {
-            item_get();
+            get_items("", "_id", '3d109c700000000000000000', '');
         });
-
-        function item_get() {
-            $.ajax({
-                type: 'GET',
-                url: '/s11',
-                data: {},
-                success: function (response) {
-                    let rows = response['items']
-                    console.log(rows)
-                    for (let i = 0; i < rows.length; i++ ) {
-                        let title = rows[i]['title']
-                        let price = rows[i]['price']
-                        let img = rows[i]['img']
-
-                        temp_html = `
-                        <div class="item">
-                            <img src="www.7-eleven.co.kr${img}" alt="">
-                            <div class="item-info">
-                                <p>${title}</p>
-                                <p>가격 : ${price} 원</p>
-                            </div>
-                            <div class="like-btn">
-                                <p>♡ (1000)</p>
-                            </div>
-                        </div>
-                        `
-
-                        $('#s11').append(temp_html)
-                    }
-                }
-            })
-        }
-
-        function item_post() {
-            $.ajax({
-                type: "POST",
-                url: "/s11",
-                data: {title_give: '봄날은간다'},
-                success: function (response) {
-                    console.log(response['msg'])
-                }
-            })
-        }
     </script>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">함무바라 법전</a>
-          <form class="d-flex">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">함무바라 밥전</a>
+        <form class="d-flex">
             <p>ㅇㅇㅇ 님 안녕하세요!</p>
             <button type="button" class="btn btn-primary" onclick="hey()">로그아웃</button>
-          </form>
-        </div>
-      </div>
-    </nav>
-    <div class="img-banner">
-        <div class="dots">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
+        </form>
     </div>
-    <div class="container">
-        <div class="search">
-            <p>상품검색</p>
-            <input type="text">
-            <button type="button" class="btn btn-primary">검색</button>
-        </div>
-        <div class="item-list">
-            <ul class="list-nav">
-                <li>GS25</li>
-                <li>CU</li>
-                <li onclick="s11()">세븐일레븐</li>
-                <li>이마트24</li>
-            </ul>
-            <div class="sort">
-                <span>신제품 순</span>
-                <span>리뷰 많은 순</span>
-                <span>좋아요 순</span>
-            </div>
-            <div class="items" id="s11">
-<!--                <div class="item">-->
-<!--                    <img src="../static/bananamilk.jpeg" alt="">-->
-<!--                    <div class="item-info">-->
-<!--                        <p>제품명 : 바나나우유</p>-->
-<!--                        <p>가격 : 1,500 원</p>-->
-<!--                    </div>-->
-<!--                    <div class="like-btn">-->
-<!--                        <p>♡ (1000)</p>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="item">-->
-<!--                    <img src="../static/bananamilk.jpeg" alt="">-->
-<!--                    <div class="item-info">-->
-<!--                        <p>제품명 : 바나나우유</p>-->
-<!--                        <p>가격 : 1,500 원</p>-->
-<!--                    </div>-->
-<!--                    <div class="like-btn">-->
-<!--                        <p>♡ (1000)</p>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="item">-->
-<!--                    <img src="../static/bananamilk.jpeg" alt="">-->
-<!--                    <div class="item-info">-->
-<!--                        <p>제품명 : 바나나우유</p>-->
-<!--                        <p>가격 : 1,500 원</p>-->
-<!--                    </div>-->
-<!--                    <div class="like-btn">-->
-<!--                        <p>♡ (1000)</p>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="item">-->
-<!--                    <img src="../static/bananamilk.jpeg" alt="">-->
-<!--                    <div class="item-info">-->
-<!--                        <p>제품명 : 바나나우유</p>-->
-<!--                        <p>가격 : 1,500 원</p>-->
-<!--                    </div>-->
-<!--                    <div class="like-btn">-->
-<!--                        <p>♡ (1000)</p>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="item">-->
-<!--                    <img src="../static/bananamilk.jpeg" alt="">-->
-<!--                    <div class="item-info">-->
-<!--                        <p>제품명 : 바나나우유</p>-->
-<!--                        <p>가격 : 1,500 원</p>-->
-<!--                    </div>-->
-<!--                    <div class="like-btn">-->
-<!--                        <p>♡ (1000)</p>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="item">-->
-<!--                    <img src="../static/bananamilk.jpeg" alt="">-->
-<!--                    <div class="item-info">-->
-<!--                        <p>제품명 : 바나나우유</p>-->
-<!--                        <p>가격 : 1,500 원</p>-->
-<!--                    </div>-->
-<!--                    <div class="like-btn">-->
-<!--                        <p>♡ (1000)</p>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="item">-->
-<!--                    <img src="../static/bananamilk.jpeg" alt="">-->
-<!--                    <div class="item-info">-->
-<!--                        <p>제품명 : 바나나우유</p>-->
-<!--                        <p>가격 : 1,500 원</p>-->
-<!--                    </div>-->
-<!--                    <div class="like-btn">-->
-<!--                        <p>♡ (1000)</p>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="item">-->
-<!--                    <img src="../static/bananamilk.jpeg" alt="">-->
-<!--                    <div class="item-info">-->
-<!--                        <p>제품명 : 바나나우유</p>-->
-<!--                        <p>가격 : 1,500 원</p>-->
-<!--                    </div>-->
-<!--                    <div class="like-btn">-->
-<!--                        <p>♡ (1000)</p>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-        </div>
+</nav>
+<div class="img-banner">
+    <div class="dots">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
     </div>
+</div>
+<div class="container">
+    <div class="search">
+        <p>상품검색</p>
+        <input id="name_search" type="text" onkeypress="if(window.event.keyCode==13){search_item()}">
+        <button type="button" onclick="search_item()" class="btn btn-primary">검색</button>
+    </div>
+    <div id="item-list" class="item-list">
+        <ul id="stores" class="list-nav">
+            <li id="gs" class="pick" onclick="change_store('gs')">GS25</li>
+            <li id="cu" onclick="change_store('cu')">CU</li>
+            <li id="s11" onclick="change_store('s11')">세븐일레븐</li>
+            <li id="e24" onclick="change_store('e24')">이마트24</li>
+        </ul>
+        <div id="sort" class="sort">
+            <span id="_id" class="pick" onclick="change_sort('_id')">신제품 순</span>
+            <span id="review" onclick="change_sort('review')">리뷰 많은 순</span>
+            <span id="like" onclick="change_sort('like')">좋아요 순</span>
+        </div>
+        <div class="items"></div>
+    </div>
+</div>
 </body>
 </html>
