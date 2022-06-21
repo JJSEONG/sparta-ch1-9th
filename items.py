@@ -1,10 +1,10 @@
-import requests
-from flask import Flask, render_template, request, jsonify, Blueprint
-from pymongo import MongoClient
+from flask import render_template, request, jsonify, Blueprint
+from bson.json_util import dumps
 from bson import ObjectId
+from pymongo import MongoClient
 import secret
 
-items = Flask(__name__)
+blue_items = Blueprint("item", __name__)
 key_list = {
     'MongoKey': secret.mongo_db_key
 }
@@ -15,28 +15,40 @@ db = client.dbsparta
 itemCollection = db.items
 
 
-@items.route('/items')
+@blue_items.route('/items', methods=['GET'])
 def get_items():
-    store = "gs"
-    sortKey = "like"
-    last_id = 8
-    # last_id = request.form["pageNum"]
-    # if request.form["store"] is not None:
-        # store = request.form["store"]
+    store = request.args.get('store')
+    sort_key = request.args.get('sort_key')
+    last_id = request.args.get('last_id')
+    search = request.args.get('search')
 
-    item_list = list(itemCollection.find({"_id": {"$gt": ObjectId('62b1057004d67a7d09e9e229')}, "store": store})
-                     .sort(sortKey)
+    print(store, sort_key, last_id, search)
+
+    if len(store) < 1:
+        item_list = get_items_all(sort_key, last_id, search)
+    else:
+        item_list = get_items_by_store(store, sort_key, last_id)
+
+    return jsonify({'items': dumps(item_list)})
+
+
+def get_items_all(key, last_id, search_keyword):
+    item_list = list(itemCollection.find({"_id": {"$gt": ObjectId(last_id)},
+                                          "title": {"$regex": search_keyword}})
+                     .sort(key)
                      .limit(8))
-    return render_template("items.html", items=item_list)
+    return item_list
 
 
-@items.route('/item/<item_id>')
+def get_items_by_store(store, key, last_id):
+    item_list = list(itemCollection.find({"_id": {"$gt": ObjectId(last_id)},
+                                          "store": store})
+                     .sort(key)
+                     .limit(8))
+    return item_list
+
+
+@blue_items.route('/item/<item_id>')
 def get_item(item_id):
     item = itemCollection.find_one({"_id": {"$eq": ObjectId(item_id)}})
-    print(item)
     return render_template("item.html", item=item)
-
-
-if __name__ == '__main__':
-    get_items()
-    get_item()
