@@ -16,6 +16,7 @@ function get_items(store, sortKey, lastId, search) {
         },
         success: function (response) {
             let rows = JSON.parse(response['items'])
+            let count = JSON.parse(response['count'])
             for (const row of rows) {
                 let id = row['_id']
                 let title = row['title']

@@ -28,12 +28,14 @@
             align-items: center;
             margin-right: 20px;
         }
+
         .img-banner {
             position: relative;
             height: 300px;
             background-color: gray;
             margin-bottom: 30px;
         }
+
         .img-banner .dots {
             position: absolute;
             left: 50%;
@@ -121,7 +123,7 @@
             width: 120px;
             text-align: center;
         }
-      
+
         .item-list .list-nav li:hover {
             background-color: #000;
             border: 1px solid #fff;
@@ -136,7 +138,7 @@
         }
 
 
-        .item-list .items .item, .skeleton {
+        .item-list .items .item {
             position: relative;
             width: 240px;
             height: 240px;
@@ -151,12 +153,6 @@
         .item-list .items .item img {
             width: 160px;
             height: 160px;
-        }
-
-        .skeleton__image {
-            width: 160px;
-            height: 160px;
-            animation: skeleton-gradient 3s linear infinite;
         }
 
         .item-list .items .item .item-info {
@@ -203,6 +199,8 @@
         $(document).ready(function () {
             get_items("", "_id", '3d109c700000000000000000', '');
         });
+
+
     </script>
 </head>
 <body>
@@ -243,6 +241,7 @@
             <span id="like" onclick="change_sort('like')">좋아요 순</span>
         </div>
         <div class="items"></div>
+        <div class="pagination"></div>
     </div>
 </div>
 </body>

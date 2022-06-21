@@ -13,6 +13,7 @@ client = MongoClient(secret.mongo_db_key)
 db = client.dbsparta
 itemCollection = db.items
 
+
 def init():
     options = webdriver.ChromeOptions()
     options.add_argument('headless')
