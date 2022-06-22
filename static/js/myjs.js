@@ -1,82 +1,16 @@
-;(function () {
-    'use strict'
+let _scrollchk = false;
+let lastIdOfReview = '3d109c700000000000000000';
+let remain_item_size = Number.MAX_SAFE_INTEGER;
 
-    const get = (target) => {
-        return document.querySelector(target)
-    }
+const review_observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        if (_scrollchk) return;
+        observer.observe(document.getElementById('last-pointer'));
+        get_posts()
 
-    let page = 1
-    const limit = 10
-    const $posts = get('.posts')
-    const end = 100
-    let total = 10
-
-    const $loader = get('.loader')
-
-    const getPost = async () => {
-        const API_URL = `https://jsonplaceholder.typicode.com/posts?_page=${page}&_limit=${limit}`
-        const response = await fetch(API_URL)
-        if (!response.ok) {
-            throw new Error('에러')
+        if (remain_item_size < 4) {
+            observer.unobserve(document.getElementById('last-pointer'));
         }
-        return await response.json()
-    }
-
-    const showPosts = (posts) => {
-        posts.forEach((post) => {
-            const $post = document.createElement('div')
-            $post.classList.add('post')
-            $post.innerHTML = `
-        <div class="header">
-          <div class="id">${post.id}</div>
-          <div class="title">${post.title}</div>
-        </div>
-        <div class="body">
-          ${post.body}
-        </div>
-      `
-            $posts.appendChild($post)
-        })
-    }
-
-    const showLoader = () => {
-        $loader.classList.add('show')
-    }
-
-    const hideLoader = () => {
-        $loader.classList.remove('show')
-    }
-
-    const loadPost = async () => {
-        // 로딩 엘레먼트를 보여줌
-        showLoader()
-        try {
-            const response = await getPost()
-            showPosts(response)
-        } catch (error) {
-            console.error(error)
-        } finally {
-            // 로딩 엘레먼트를 사라지게 함
-            hideLoader()
-        }
-    }
-
-    const onScroll = () => {
-        const {scrollTop, scrollHeight, clientHeight} = document.documentElement
-
-        if (total === end) {
-            window.removeEventListener('scroll', onScroll)
-            return
-        }
-        if (scrollTop + clientHeight >= scrollHeight - 5) {
-            page++
-            total += 10
-            loadPost()
-        }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        loadPost()
-        window.addEventListener('scroll', onScroll)
-    })
-})()
+    });
+});

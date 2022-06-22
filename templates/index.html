@@ -40,36 +40,19 @@
             })
         }
 
-        const io = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting) return;
-                if (_scrollchk) return;
-                observer.observe(document.getElementById('last-pointer'));
-                get_items(storeVal, sortKeyVal, lastIdOfItem, searchVal)
 
-                if (remain_item_size < 12) {
-                    console.log("less then 12 remain... " + remain_item_size)
-                    io.unobserve(document.getElementById('last-pointer'));
-                    console.log('stop observer')
-                    sleep(3000)
-                }
-
-
-            });
-        });
     </script>
 </head>
 <body>
 {% include'layout/header.html' %}
-<div class="img-banner">
-    <div class="dots">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
-</div>
+<header>
+    <h1>
+        <a href="#">
+            <img src="/static/image/logo.png" alt="">
+            함무바라 법전
+        </a>
+    </h1>
+</header>
 <div class="container">
     <div class="search">
         <p>상품검색</p>

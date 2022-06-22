@@ -8,11 +8,45 @@
 * {
     font-family: 'Gmartket';
 }
+
 body {
     position: relative;
 }
+
 p {
     margin: 0;
+}
+
+header {
+    width: 100%;
+    height: 200px;
+    margin: 50px auto;
+}
+
+header a {
+    color: inherit;
+    text-decoration: none;
+}
+
+header a:hover {
+    color: inherit;
+}
+
+header a img {
+    height: 120px;
+    margin-right: 20px;
+}
+
+header h1 {
+    text-align: center;
+    font-weight: bold;
+    font-size: 56px;
+    color: goldenrod;
+    text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.7);
+}
+
+.navbar {
+    margin-bottom: 100px;
 }
 
 .d-flex p {
@@ -22,48 +56,67 @@ p {
     margin-right: 20px;
 }
 
-.img-banner {
-    position: relative;
-    height: 300px;
-    background-color: gray;
-    margin-bottom: 30px;
-}
+/*.img-banner {*/
+/*    position: relative;*/
+/*    height: 300px;*/
+/*    background-color: gray;*/
+/*    margin-bottom: 30px;*/
+/*}*/
 
-.img-banner .dots {
-    position: absolute;
-    left: 50%;
-    bottom: 10px;
-    transform: translateX(-50%);
-}
+/*.img-banner .dots {*/
+/*    position: absolute;*/
+/*    left: 50%;*/
+/*    bottom: 10px;*/
+/*    transform: translateX(-50%);*/
+/*}*/
 
-.img-banner .dots span {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    border-radius: 7px;
-    background-color: #fff;
-    cursor: pointer;
-}
+/*.img-banner .dots span {*/
+/*    display: inline-block;*/
+/*    width: 14px;*/
+/*    height: 14px;*/
+/*    border-radius: 7px;*/
+/*    background-color: #fff;*/
+/*    cursor: pointer;*/
+/*}*/
 
 .search {
+    position: relative;
+    width: 80%;
+    height: 60px;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-around;
     align-items: center;
-    margin-bottom: 50px;
+    margin: 0 auto 50px;
+    border-radius: 24px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
 }
 
 .search p {
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 26px;
 }
 
 .search input {
-    width: 500px;
+    width: 700px;
+    height: 80%;
+    outline: none;
+    border: none;
+    background: transparent;
+    font-size: 20px;
 }
 
 .search button {
-    width: 120px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 14%;
+    height: 100%;
+    background-color: goldenrod;
+    border-radius: 0 20px 20px 0;
+    border: none;
+    font-size: 24px;
 }
 
 .item-list {
@@ -72,7 +125,7 @@ p {
 }
 
 .item-list .sort {
-    height: 30px;
+    height: 40px;
     margin: 0 auto;
     display: flex;
     justify-content: center;
@@ -80,11 +133,12 @@ p {
 }
 
 .item-list .sort span {
-    width: 120px;
+    width: 140px;
     height: 100%;
-    border: 1px solid #000;
+    background-color: goldenrod;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
     padding: 2px;
-    border-radius: 4px;
+    border-radius: 10px;
     box-sizing: border-box;
     display: flex;
     justify-content: center;
@@ -95,7 +149,7 @@ p {
 }
 
 .item-list .sort span:hover {
-    background-color: #000;
+    background-color: gray;
     color: #fff;
 }
 
@@ -113,6 +167,8 @@ p {
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 22px;
+    letter-spacing: 2px;
     color: #000;
     cursor: pointer;
     border-radius: 20px 20px 0 0;
@@ -124,11 +180,10 @@ p {
     box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.2);
 }
 
-/*.item-list .list-nav li:hover {*/
-/*    background-color: #000;*/
-/*    border: 1px solid #fff;*/
-/*    color: #fff;*/
-/*}*/
+.item-list .list-nav li:hover {
+    background-color: gray;
+    color: #fff;
+}
 
 .item-list .items {
     display: flex;
@@ -152,8 +207,13 @@ p {
     overflow: hidden;
 }
 
+.item-list .items .item:hover {
+    transform: scale(1.2);
+    cursor: pointer;
+    transition: 1s;
+}
+
 .item-list .items .item img {
-    width: 140px;
     height: 140px;
     margin: 20px;
 }
@@ -170,12 +230,12 @@ p {
 }
 
 .item-list .items .item .item-info p:first-child {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
 }
 
 .item-list .items .item .item-info p:last-child {
-
+    font-size: 14px;
 }
 
 .item-list .items .item .like-btn {
@@ -194,8 +254,17 @@ p {
     background-color: #fff;
 }
 
+.item-list > #stores > .pick:hover {
+    background-color: #fff;
+    color: #000;
+}
+
 .item-list > #sort > .pick {
-    background-color: goldenrod;
+    background-color: #fff;
+}
+
+.item-list > #sort > .pick:hover {
+    color: #000;
 }
 
 .top-btn {

@@ -28,7 +28,6 @@ function get_items(store, sortKey, lastId, search) {
         },
         success: function (response) {
             let rows = JSON.parse(response['items']);
-            console.log("rows.length: " + rows.length)
             remain_item_size = JSON.parse(response['count']);
             lastIdOfItem = rows[rows.length - 1]['_id']['$oid'];
             for (const row of rows) {
@@ -46,7 +45,7 @@ function get_items(store, sortKey, lastId, search) {
                                 <p>가격 : ${price} 원</p>
                             </div>
                             <div class="like-btn">
-                                <p>♡ (${like})</p>
+                                <p>♥ (${like})</p>
                             </div>
                         </div>
                         `
@@ -63,7 +62,7 @@ function get_items(store, sortKey, lastId, search) {
         complete: function () {
             _scrollchk = false;
             $(".loading").hide();
-        },
+        }
     })
 }
 
@@ -120,3 +119,17 @@ function change_store(store) {
     storeVal = store;
     get_items(store, "_id", '3d109c700000000000000000', '')
 }
+
+const io = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        if (_scrollchk) return;
+        observer.observe(document.getElementById('last-pointer'));
+        get_items(storeVal, sortKeyVal, lastIdOfItem, searchVal)
+
+        if (remain_item_size < 12) {
+            io.unobserve(document.getElementById('last-pointer'));
+            sleep(3000)
+        }
+    });
+});
