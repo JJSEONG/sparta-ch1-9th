@@ -60,7 +60,7 @@ def scrap_gs(driver):
                 "title": title,
                 "price": price,
                 "like": 0,
-                "review": []
+                "reviews": []
             })
 
         sleep(1)
@@ -98,7 +98,7 @@ def scrap_s11(driver):
                 "title": title,
                 "price": price,
                 "like": 0,
-                "review": []
+                "reviews": []
             })
     sleep(1)
     print("=== s11 scraping finish ===")
@@ -133,7 +133,7 @@ def scrap_cu(driver):
                 "title": title,
                 "price": price,
                 "like": 0,
-                "review": []
+                "reviews": []
             })
         sleep(1)
     print("=== cu scraping finish ===")

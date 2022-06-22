@@ -3,6 +3,7 @@ from pymongo import MongoClient
 import jwt
 from flask import Flask, render_template, jsonify, request, redirect, url_for, Blueprint
 import secret
+from items import add_review
 
 blue_review = Blueprint("review", __name__)
 
@@ -25,14 +26,17 @@ def reviewing():
         user_info = db.users.find_one({"username": payload["id"]})
         comment_receive = request.form["comment_give"]
         date_receive = request.form["date_give"]
+        item_id = request.form['item_id']
         doc = {
             "username": user_info["username"],
             "profile_name": user_info["profile_name"],
             "profile_pic_real": user_info["profile_pic_real"],
             "comment": comment_receive,
-            "date": date_receive
+            "date": date_receive,
+            "item_id": item_id
         }
-        db.reviews.insert_one(doc)
+        review_id = db.reviews.insert_one(doc)
+        add_review(item_id, str(review_id.inserted_id))
         return jsonify({"result": "success", 'msg': '포스팅 성공'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
@@ -42,11 +46,13 @@ def reviewing():
 def get_reviews():
     token_receive = request.cookies.get('mytoken')
     last_id = request.args.get('last_id')
+    item_id = request.args.get('item_id')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         # 포스팅 목록 받아오기
         reviews = list(db.reviews
-                       .find({"_id": {"$gt": ObjectId(last_id)}})
+                       .find({"_id": {"$gt": ObjectId(last_id)},
+                              "item_id": {"$eq": item_id}})
                        .sort("date", -1)
                        .limit(4))
         for review in reviews:
