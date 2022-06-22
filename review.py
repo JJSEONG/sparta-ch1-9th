@@ -1,4 +1,5 @@
 from bson import ObjectId
+from bson.json_util import dumps
 from pymongo import MongoClient
 import jwt
 from flask import Flask, render_template, jsonify, request, redirect, url_for, Blueprint
@@ -107,19 +108,16 @@ def delete_review():
         return jsonify({'status': 401})
 
 
-@blue_review.route('/review', methods=['DELETE'])
+@blue_review.route('/myReviews', methods=['GET'])
 def reviews_by_username():
-    comment_id = request.form['comment_id']
-    comment_info = db.reviews.find_one({"_id": ObjectId(comment_id)})
-
     token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-
-    if comment_info['username'] == payload['id']:
-        res = db.reviews.delete_one({'_id': ObjectId(comment_id)})
-        if res:
-            return jsonify({'status': 200})
-        else:
-            return jsonify({'status': 400})
-    else:
-        return jsonify("게시자만 삭제할 수 있습니다.")
+    last_review_id = request.args.get('last_review_id')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        username = payload['id']
+        reviews = list(db.reviews.find({"username": {"$eq": username}})
+                       .sort('date', -1)
+                       .limit(5))
+        return jsonify({"result": "success", "reviews": dumps(reviews), "count": len(reviews)})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return jsonify({"result": "fail"})

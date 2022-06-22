@@ -33,7 +33,7 @@ def get_items():
 def get_items_all(key, last_id, search_keyword):
     item_list = list(itemCollection.find({"_id": {"$gt": ObjectId(last_id)},
                                           "title": {"$regex": search_keyword}})
-                     .sort(key)
+                     .sort(key, -1)
                      .limit(12))
     return {'items': dumps(item_list), "count": len(item_list)}
 
@@ -41,7 +41,7 @@ def get_items_all(key, last_id, search_keyword):
 def get_items_by_store(store, key, last_id):
     item_list = list(itemCollection.find({"_id": {"$gt": ObjectId(last_id)},
                                           "store": store})
-                     .sort(key)
+                     .sort(key, -1)
                      .limit(12))
     return {'items': dumps(item_list), "count": len(item_list)}
 
