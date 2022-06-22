@@ -70,7 +70,7 @@ def sign_up():
         "password": password_hash,  # 비밀번호
         "profile_name": username_receive,  # 프로필 이름 기본값은 아이디
         "profile_pic": "",  # 프로필 사진 파일 이름
-        "profile_pic_real": "profile_pics/profile_placeholder.png",  # 프로필 사진 기본 이미지
+        "profile_pic_real": "image/profile_pics/profile_placeholder.png",  # 프로필 사진 기본 이미지
         "profile_info": ""  # 프로필 한 마디
     }
     db.users.insert_one(doc)
@@ -107,7 +107,7 @@ def save_img():
             file = request.files["file_give"]
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
-            file_path = "profile_pics/"
+            file_path = "image/profile_pics/"
             print(username + "." + extension)
             file.save("./static/" + file_path, username + "." + extension)
             new_doc["profile_pic"] = filename

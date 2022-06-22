@@ -14,7 +14,7 @@ app.register_blueprint(items.blue_items)
 app.register_blueprint(user.blue_user)
 
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
+app.config['UPLOAD_FOLDER'] = "./static/image/profile_pics"
 
 key_list = {
     'MongoKey': secret.mongo_db_key,

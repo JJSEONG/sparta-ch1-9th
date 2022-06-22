@@ -16,193 +16,16 @@
 
 
     <script src="/static/app.js"></script>
-    <script src="/static/loading.js"></script>
-    <link href="/static/loading.css" rel="stylesheet" type="text/css">
+    <script src="/static/js/loading.js"></script>
+    <link href="/static/css/loading.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/main.css">
     <title>함무봐라 법전</title>
-    <style>
-        p {
-            margin: 0;
-        }
-
-        .d-flex p {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-left: 20px;
-            margin-right: 20px;
-        }
-
-        .img-banner {
-            position: relative;
-            height: 300px;
-            background-color: gray;
-            margin-bottom: 30px;
-        }
-
-        .img-banner .dots {
-            position: absolute;
-            left: 50%;
-            bottom: 10px;
-            transform: translateX(-50%);
-        }
-
-        .img-banner .dots span {
-            display: inline-block;
-            width: 14px;
-            height: 14px;
-            border-radius: 7px;
-            background-color: #fff;
-            cursor: pointer;
-        }
-
-        .search {
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-            margin-bottom: 50px;
-        }
-
-        .search p {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .search input {
-            width: 500px;
-        }
-
-        .search button {
-            width: 120px;
-        }
-
-        .item-list {
-            border: 1px solid #000;
-            margin-bottom: 50px;
-        }
-
-        .item-list .sort {
-            height: 30px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .item-list .sort span {
-            width: 120px;
-            height: 100%;
-            border: 1px solid #000;
-            padding: 2px;
-            border-radius: 4px;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 6px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .item-list .sort span:hover {
-            background-color: #000;
-            color: #fff;
-        }
-
-        .item-list .list-nav {
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-            list-style-type: none;
-            background-color: lightgray;
-            height: 40px;
-        }
-
-        .item-list .list-nav li {
-            color: #000;
-            cursor: pointer;
-            border-radius: 6px;
-            padding: 2px 6px;
-            width: 120px;
-            text-align: center;
-        }
-
-        .item-list .list-nav li:hover {
-            background-color: #000;
-            border: 1px solid #fff;
-            color: #fff;
-        }
-
-        .item-list .items {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-
-        .item-list .items .item {
-            position: relative;
-            width: 240px;
-            height: 240px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid #000;
-            margin: 20px;
-        }
-
-        .item-list .items .item img {
-            width: 160px;
-            height: 160px;
-        }
-
-        .item-list .items .item .item-info {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .item-list .items .item .like-btn {
-            position: absolute;
-            bottom: 70px;
-            right: 20px;
-            background-color: #000;
-            padding: 6px;
-            border-radius: 30px;
-            color: #fff;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .item-list > #stores > .pick {
-            background-color: goldenrod;
-        }
-
-        .item-list > #sort > .pick {
-            background-color: goldenrod;
-        }
-
-        @keyframes skeleton-gradient {
-            0% {
-                background: rgb(212, 212, 212);
-            }
-            50% {
-                background: rgb(128, 128, 128);
-            }
-            100% {
-                background: rgb(212, 212, 212);
-            }
-        }
-
-    </style>
     <script>
         $(document).ready(function () {
             get_items("", "_id", '3d109c700000000000000000', '');
+            io.observe(document.getElementById('last-pointer'))
         });
 
         function sign_out() {
@@ -217,35 +40,26 @@
             })
         }
 
-
+        const io = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                if (_scrollchk) return;
+                console.log("observe!")
+                observer.observe(document.getElementById('last-pointer'));
+                get_items(storeVal, sortKeyVal, lastIdOfItem, searchVal)
+                if (item_size === 0) {
+                    io.unobserve(document.getElementById('last-pointer'));
+                } else {
+                    if (item_size <= 12) {
+                        io.unobserve(document.getElementById('last-pointer'));
+                    }
+                }
+            });
+        });
     </script>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">함무봐라 법전</a>
-        {% if user is none %}
-            <form class="d-flex">
-                <button type="button" class="btn btn-primary" onclick="location.href='/login'">로그인</button>
-            </form>
-        {% else %}
-            <form class="d-flex">
-                <div class="image is-48x48">
-                    {% if user['profile_image']|length == 0 or user['profile_image'] is none %}
-                        <img class="profile is-rounded" src="/static/profile_pics/profile_placeholder.png">
-                    {% else %}
-                        <img class="profile is-rounded" src="/static/profile_pics/"{{ user['profile-image'] }}>
-                    {% endif %}
-                </div>
-                <p>{{ user['profile_name'] }} 님 안녕하세요!</p>
-                <button type="button" class="btn btn-secondary" style="margin-right: 5px;"
-                        onclick="location.href='user/{{ user['profile_name'] }}'">마이페이지
-                </button>
-                <button type="button" class="btn btn-primary" onclick="sign_out()">로그아웃</button>
-            </form>
-        {% endif %}
-    </div>
-</nav>
+{% include'layout/header.html' %}
 <div class="img-banner">
     <div class="dots">
         <span></span>
@@ -263,17 +77,25 @@
     </div>
     <div id="item-list" class="item-list">
         <ul id="stores" class="list-nav">
-            <li id="gs" class="pick" onclick="change_store('gs')">GS25</li>
+            <li id="gs" onclick="change_store('gs')">GS25</li>
             <li id="cu" onclick="change_store('cu')">CU</li>
             <li id="s11" onclick="change_store('s11')">세븐일레븐</li>
         </ul>
         <div id="sort" class="sort">
-            <span id="_id" class="pick" onclick="change_sort('_id')">신제품 순</span>
+            <span id="_id" onclick="change_sort('_id')">신제품 순</span>
             <span id="review" onclick="change_sort('review')">리뷰 많은 순</span>
             <span id="like" onclick="change_sort('like')">좋아요 순</span>
         </div>
         <div class="items"></div>
-        <div class="pagination"></div>
+        <div class="load">
+            <img src="/static/image/loading.gif" alt="loading image">
+        </div>
+        <div id="last-pointer"></div>
+    </div>
+    <div class="top-btn">
+        <a href="#head">
+            <p> TOP <span> > </span></p>
+        </a>
     </div>
 </div>
 </body>

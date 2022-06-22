@@ -5,8 +5,19 @@
  *  @Param search  - 검색어
  */
 
-let lastIdOfItem;
+
+let lastIdOfItem = '3d109c700000000000000000';
+let storeVal = ""
+let sortKeyVal = ""
+let searchVal = ""
+let _scrollchk = false;
+let item_size = 1000;
+
+
 function get_items(store, sortKey, lastId, search) {
+    storeVal = store
+    sortKeyVal = sortKey
+    searchVal = search
     $.ajax({
         type: 'GET',
         url: '/items',
@@ -18,7 +29,7 @@ function get_items(store, sortKey, lastId, search) {
         },
         success: function (response) {
             let rows = JSON.parse(response['items']);
-            let count = JSON.parse(response['count']);
+            item_size = JSON.parse(response['count']);
             lastIdOfItem = rows[rows.length - 1]['_id']['$oid'];
             for (const row of rows) {
                 let id = row['_id']['$oid']
@@ -41,7 +52,22 @@ function get_items(store, sortKey, lastId, search) {
                         `
                 $('.items').append(temp_html)
             }
-        }
+        },
+        error: function (response) {
+            console.log(response)
+        },
+        beforeSend: function () {
+            console.log("beforeSend")
+            _scrollchk = true;
+            // $('.items').appendChild(skeleton.show());
+            $('.loading').show();
+        },
+        complete: function () {
+            console.log("afterSend")
+            _scrollchk = false;
+            $(".loading").hide();
+            // skeleton.hide();
+        },
     })
 }
 
@@ -56,6 +82,7 @@ function search_item() {
     }
 
     let search = $("#search_input").val()
+    searchVal = search;
 
     if (search === "") {
 
@@ -82,6 +109,7 @@ function change_sort(sort) {
         }
     }
     $('.items').empty()
+    sortKeyVal = sort;
     get_items(storeName, sort, '3d109c700000000000000000', '')
 }
 
@@ -93,5 +121,10 @@ function change_store(store) {
 
     $(`#${store}`).addClass("pick");
     $('.items').empty()
+    storeVal = store;
     get_items(store, "_id", '3d109c700000000000000000', '')
 }
+
+
+
+

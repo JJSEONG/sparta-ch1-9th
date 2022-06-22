@@ -1,0 +1,239 @@
+@font-face {
+    font-family: 'Gmarket';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    font-family: 'Gmartket';
+}
+body {
+    position: relative;
+}
+p {
+    margin: 0;
+}
+
+.d-flex p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.img-banner {
+    position: relative;
+    height: 300px;
+    background-color: gray;
+    margin-bottom: 30px;
+}
+
+.img-banner .dots {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+}
+
+.img-banner .dots span {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.search {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.search p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search input {
+    width: 500px;
+}
+
+.search button {
+    width: 120px;
+}
+
+.item-list {
+    /*border: 1px solid #000;*/
+    margin-bottom: 50px;
+}
+
+.item-list .sort {
+    height: 30px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.item-list .sort span {
+    width: 120px;
+    height: 100%;
+    border: 1px solid #000;
+    padding: 2px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.item-list .sort span:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+.item-list .list-nav {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    list-style-type: none;
+    height: 60px;
+    margin: 0 auto 20px;
+    padding: 0;
+}
+
+.item-list .list-nav li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #000;
+    cursor: pointer;
+    border-radius: 20px 20px 0 0;
+    padding: 2px 6px;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background-color: goldenrod;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/*.item-list .list-nav li:hover {*/
+/*    background-color: #000;*/
+/*    border: 1px solid #fff;*/
+/*    color: #fff;*/
+/*}*/
+
+.item-list .items {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+
+.item-list .items .item {
+    position: relative;
+    width: 240px;
+    height: 240px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #000;
+    margin: 20px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.item-list .items .item img {
+    width: 140px;
+    height: 140px;
+    margin: 20px;
+}
+
+.item-list .items .item .item-info {
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.item-list .items .item .item-info p:first-child {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.item-list .items .item .item-info p:last-child {
+
+}
+
+.item-list .items .item .like-btn {
+    position: absolute;
+    bottom: 70px;
+    right: 20px;
+    background-color: #000;
+    padding: 6px;
+    border-radius: 30px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.item-list > #stores > .pick {
+    background-color: #fff;
+}
+
+.item-list > #sort > .pick {
+    background-color: goldenrod;
+}
+
+.top-btn {
+    width: 120px;
+    height: 50px;
+    border-radius: 30px;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+}
+
+.top-btn a {
+    text-decoration: none;
+}
+
+.top-btn p {
+    color: #fff;
+    font-size: 20px;
+}
+
+.top-btn p span {
+    display: inline-block;
+    transform: rotate(-90deg) translateX(2px);
+    margin-left: 10px;
+}
+
+@keyframes skeleton-gradient {
+    0% {
+        background: rgb(212, 212, 212);
+    }
+    50% {
+        background: rgb(128, 128, 128);
+    }
+    100% {
+        background: rgb(212, 212, 212);
+    }
+}

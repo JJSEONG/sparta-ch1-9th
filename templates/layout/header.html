@@ -1,0 +1,25 @@
+<nav id="head" class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">함무봐라 법전</a>
+        {% if user is none %}
+            <form class="d-flex">
+                <button type="button" class="btn btn-primary" onclick="location.href='/login'">로그인</button>
+            </form>
+        {% else %}
+            <form class="d-flex">
+                <div class="image is-48x48">
+                    {% if user['profile_image']|length == 0 or user['profile_image'] is none %}
+                        <img class="profile is-rounded" src="/static/image/profile_pics/basic_profile.png">
+                    {% else %}
+                        <img class="profile is-rounded" src="/static/image/profile_pics/"{{ user['profile-image'] }}>
+                    {% endif %}
+                </div>
+                <p>{{ user['profile_name'] }} 님 안녕하세요!</p>
+                <button type="button" class="btn btn-secondary" style="margin-right: 5px;"
+                        onclick="location.href='user/{{ user['profile_name'] }}'">마이페이지
+                </button>
+                <button type="button" class="btn btn-primary" onclick="sign_out()">로그아웃</button>
+            </form>
+        {% endif %}
+    </div>
+</nav>

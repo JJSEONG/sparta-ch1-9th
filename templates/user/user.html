@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <!-- Font Awesome CSS -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='/css/mystyle.css') }}" rel="stylesheet">
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+    <script src="{{ url_for('static', filename='/js/myjs.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
     <script>
@@ -246,7 +246,7 @@
                 <div class="media-left">
                     <a class="image is-64x64" href="#">
                         <img class="is-rounded"
-                             src={{ url_for("static", filename="profile_pics/profile_placeholder.png") }} alt="Image">
+                             src={{ url_for("static", filename="image/profile_pics/profile_placeholder.png") }} alt="Image">
                     </a>
                 </div>
                 <div class="media-content">

@@ -2,7 +2,7 @@ const makeSpinner = () => {
     const spinner = document.createElement('div');
     const spinnerImage = document.createElement('img');
     spinner.classList.add('load');
-    spinnerImage.setAttribute('src', '/static/loading.gif');
+    spinnerImage.setAttribute('src', '/static/image/loading.gif');
     spinner.appendChild(spinnerImage);
     return spinner;
 };
