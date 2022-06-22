@@ -20,6 +20,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <script src="{{ url_for('static', filename='/js/myjs.js') }}"><</script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
     <style>
         .myPic {
             width: 300px;
@@ -52,6 +53,7 @@
         div.box:hover button.delete {
             display: block;
         }
+
     </style>
 
     <script>
@@ -145,20 +147,23 @@
         }
 
         function get_posts() {
-            $("#post-box").empty()
             $.ajax({
                 type: "GET",
                 url: "/reviews",
-                data: {},
+                data: {
+                    'last_id': lastIdOfReview
+                },
                 success: function (response) {
                     if (response["result"] == "success") {
                         let reviews = response["reviews"]
+                        remain_item_size = response['size']
                         for (let i = 0; i < reviews.length; i++) {
                             let review = reviews[i]
                             let time_post = new Date(review["date"])
                             let time_before = time2str(time_post)
                             let class_heart = review['heart_by_me'] ? "fa-heart" : "fa-heart-o"
                             let count_heart = review['count_heart']
+                            lastIdOfReview = review['_id']
                             let html_temp = `<div class="box" id="${review["_id"]}"
                                         <article class="media">
                                             <div class="media-left">
@@ -171,7 +176,6 @@
                                             <div class="media-content">
                                                 <div class="content">
                                                     <p>
-
                                                         <br>
                                                         ${review['comment']}
                                                     </p>
@@ -193,25 +197,49 @@
                             $("#post-box").append(html_temp)
                         }
                     }
+                },
+                error: function (response) {
+                    console.log(response)
+                },
+                beforeSend: function () {
+                    _scrollchk = true;
+                },
+                complete: function () {
+                    _scrollchk = false;
                 }
             })
         }
 
         $(document).ready(function () {
             get_posts()
+            review_observer.observe(document.getElementById('last-pointer'))
         })
     </script>
 
 </head>
 <body>
-<div class="myPic">
-    <img src="{{ item['image'] }}" alt="">
-</div>
+
 <section class="section is-small">
-    <h1 class="title">{{ item['title'] }}</h1>
-    <h2 class="subtitle">
-        제품 가격: {{ item['price'] }}원
-    </h2>
+    <article class="media">
+        <figure class="media-left" style="align-self: center">
+            <div class="myPic">
+                <img src="{{ item['image'] }}" alt="">
+            </div>
+        </figure>
+        <div class="media-content">
+            <div class="info-box" style="margin-top: 50px">
+                <h1 class="title">{{ item['title'] }}</h1>
+                <h2 class="subtitle">
+                    제품 가격: {{ item['price'] }}원
+                </h2>
+                <a aria-label="heart" onclick="toggle_like('', 'heart')">
+                    <i class="fa fa-heart" aria-hidden="true"></i>
+                    <span class="like-num">({{ item['like'] }})</span>
+                </a>
+            </div>
+        </div>
+    </article>
+
 </section>
 <nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
@@ -274,6 +302,7 @@
 <section class="section"></section>
 <section class="section">
     <div id="post-box" class="container"></div>
+    <div id="last-pointer"></div>
 </section>
 </body>
 </html>

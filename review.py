@@ -41,15 +41,19 @@ def reviewing():
 @blue_review.route("/reviews", methods=['GET'])
 def get_reviews():
     token_receive = request.cookies.get('mytoken')
+    last_id = request.args.get('last_id')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         # 포스팅 목록 받아오기
-        reviews = list(db.reviews.find({}).sort("date", -1).limit(20))
+        reviews = list(db.reviews
+                       .find({"_id": {"$gt": ObjectId(last_id)}})
+                       .sort("date", -1)
+                       .limit(4))
         for review in reviews:
             review["_id"] = str(review["_id"])
             review["count_heart"] = db.likes.count_documents({"review_id": review["_id"], "type": "heart"})
             review["heart_by_me"] = bool(db.likes.find_one({"review_id": review["_id"], "type": "heart", "username": payload['id']}))
-        return jsonify({"result": "success", "msg": "포스팅을 가져왔습니다.","reviews":reviews})
+        return jsonify({"result": "success", "msg": "포스팅을 가져왔습니다.", "reviews": reviews, "size": len(reviews)})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 

@@ -1,5 +1,4 @@
 import schedule
-import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -60,7 +59,8 @@ def scrap_gs(driver):
                 "image": image,
                 "title": title,
                 "price": price,
-                "like": 0
+                "like": 0,
+                "review": []
             })
 
         sleep(1)
@@ -97,7 +97,8 @@ def scrap_s11(driver):
                 "image": "https://www.7-eleven.co.kr" + image,
                 "title": title,
                 "price": price,
-                "like": 0
+                "like": 0,
+                "review": []
             })
     sleep(1)
     print("=== s11 scraping finish ===")
@@ -131,7 +132,8 @@ def scrap_cu(driver):
                 "image": "http:" + image,
                 "title": title,
                 "price": price,
-                "like": 0
+                "like": 0,
+                "review": []
             })
         sleep(1)
     print("=== cu scraping finish ===")
