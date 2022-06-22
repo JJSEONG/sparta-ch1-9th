@@ -55,3 +55,8 @@ def like():
 def get_item(item_id):
     item = itemCollection.find_one({"_id": {"$eq": ObjectId(item_id)}})
     return render_template("item.html", item=item)
+
+
+def add_review(item_id, review_id):
+    itemCollection.update_one({"_id": {"$eq": ObjectId(item_id)}},
+                               {"$push": {"reviews": review_id}})

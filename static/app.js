@@ -44,7 +44,7 @@ function get_items(store, sortKey, lastId, search) {
                                 <p>${title}</p>
                                 <p>가격 : ${price} 원</p>
                             </div>
-                            <div class="like-btn">
+                            <div class="like-btn" onclick="like()">
                                 <p>♥ (${like})</p>
                             </div>
                         </div>
@@ -133,3 +133,10 @@ const io = new IntersectionObserver((entries, observer) => {
         }
     });
 });
+
+function like() {
+    const like = document.querySelector('.like-btn')
+        like.addEventListener('click', () => {
+            alert('hello')
+        })
+}
