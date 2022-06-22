@@ -11,12 +11,16 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
 
     <script src="/static/app.js"></script>
     <script src="/static/loading.js"></script>
     <link href="/static/loading.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
-    <title>함무바라 법전</title>
+    <title>함무봐라 법전</title>
     <style>
         p {
             margin: 0;
@@ -26,6 +30,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            margin-left: 20px;
             margin-right: 20px;
         }
 
@@ -200,17 +205,45 @@
             get_items("", "_id", '3d109c700000000000000000', '');
         });
 
+        function sign_out() {
+            $.removeCookie('mytoken', {path: '/'});
+            Swal.fire({
+                icon: 'success',
+                title: '로그아웃되었습니다.',
+                showConfirmButton: false,
+                timer: 1500
+            }).then((result) => {
+                window.location.href = "/login"
+            })
+        }
+
 
     </script>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">함무바라 밥전</a>
-        <form class="d-flex">
-            <p>ㅇㅇㅇ 님 안녕하세요!</p>
-            <button type="button" class="btn btn-primary" onclick="hey()">로그아웃</button>
-        </form>
+        <a class="navbar-brand" href="#">함무봐라 법전</a>
+        {% if user is none %}
+            <form class="d-flex">
+                <button type="button" class="btn btn-primary" onclick="location.href='/login'">로그인</button>
+            </form>
+        {% else %}
+            <form class="d-flex">
+                <div class="image is-48x48">
+                    {% if user['profile_image']|length == 0 or user['profile_image'] is none %}
+                        <img class="profile is-rounded" src="/static/profile_pics/profile_placeholder.png">
+                    {% else %}
+                        <img class="profile is-rounded" src="/static/profile_pics/"{{ user['profile-image'] }}>
+                    {% endif %}
+                </div>
+                <p>{{ user['profile_name'] }} 님 안녕하세요!</p>
+                <button type="button" class="btn btn-secondary" style="margin-right: 5px;"
+                        onclick="location.href='user/{{ user['profile_name'] }}'">마이페이지
+                </button>
+                <button type="button" class="btn btn-primary" onclick="sign_out()">로그아웃</button>
+            </form>
+        {% endif %}
     </div>
 </nav>
 <div class="img-banner">
@@ -225,7 +258,7 @@
 <div class="container">
     <div class="search">
         <p>상품검색</p>
-        <input id="name_search" type="text" onkeypress="if(window.event.keyCode==13){search_item()}">
+        <input id="search_input" type="text" onkeypress="if(window.event.keyCode==13){search_item()}">
         <button type="button" onclick="search_item()" class="btn btn-primary">검색</button>
     </div>
     <div id="item-list" class="item-list">
@@ -233,7 +266,6 @@
             <li id="gs" class="pick" onclick="change_store('gs')">GS25</li>
             <li id="cu" onclick="change_store('cu')">CU</li>
             <li id="s11" onclick="change_store('s11')">세븐일레븐</li>
-            <li id="e24" onclick="change_store('e24')">이마트24</li>
         </ul>
         <div id="sort" class="sort">
             <span id="_id" class="pick" onclick="change_sort('_id')">신제품 순</span>

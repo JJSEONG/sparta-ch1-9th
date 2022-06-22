@@ -40,7 +40,7 @@ def get_items_all(key, last_id, search_keyword):
 
 
 def get_count_all(search_keyword):
-    count= itemCollection.count_documents({"title": {"$regex": search_keyword}})
+    count = itemCollection.count_documents({"title": {"$regex": search_keyword}})
     return {"count": count}
 
 
@@ -70,6 +70,9 @@ def get_count():
     return jsonify(item_collection)
 
 
+@blue_items.route('/items/like')
+def like():
+    return
 
 @blue_items.route('/item/<item_id>')
 def get_item(item_id):

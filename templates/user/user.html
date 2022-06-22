@@ -23,6 +23,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
     <script>
 
@@ -32,8 +33,14 @@
 
         function sign_out() {
             $.removeCookie('mytoken', {path: '/'});
-            alert('로그아웃!')
-            window.location.href = "/login"
+            Swal.fire({
+                icon: 'success',
+                title: '로그아웃되었습니다.',
+                showConfirmButton: false,
+                timer: 1500
+            }).then((result) => {
+                window.location.href = "/login"
+            })
         }
 
         function update_profile() {
@@ -259,12 +266,10 @@
                                     class="like-num">2.7k</span>
                             </a>
                         </div>
-
                     </nav>
                 </div>
             </article>
         </div>
-
     </div>
 </section>
 </body>

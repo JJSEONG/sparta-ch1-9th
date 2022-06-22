@@ -7,11 +7,16 @@ from webdriver_manager.chrome import ChromeDriverManager
 from time import sleep
 from pymongo import MongoClient
 import secret
+import locale
 
 # MongoDBConnection
 client = MongoClient(secret.mongo_db_key)
 db = client.dbsparta
 itemCollection = db.items
+
+# 만 단위 문자열 to 숫자
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+locale.atoi('1,000,000')
 
 
 def init():
@@ -44,7 +49,12 @@ def scrap_gs(driver):
         for item in items:
             image = item.select_one(".img > img")['src']
             title = item.select_one(".tit").text
-            price = item.select_one(".price").text
+            price_one = item.select_one(".price > span").text[0:5]
+            if type("str") == type(price_one):
+                price = locale.atoi(price_one)
+            else:
+                price = price_one
+
             item_list.append({
                 "store": "gs",
                 "image": image,
@@ -54,6 +64,8 @@ def scrap_gs(driver):
             })
 
         sleep(1)
+
+    print("=== gs scraping finish ===")
     return item_list
 
 
@@ -71,18 +83,24 @@ def scrap_s11(driver):
     for item in items:
         is_new = item.select_one(".tag_list_01 > .ico_tag_03")
         if is_new is not None and is_new.text == "신상품":
-            source = item.select_one(".pic_product > img")
-            image = source['src']
-            title = source['alt']
+            img = item.select_one(".pic_product > img")
+            image = img['src']
+            title = item.select_one(".pic_product > .infowrap > .name").text
+            price_one = item.select_one("div > div> div.price > span").text
+            if type("str") == type(price_one):
+                price = locale.atoi(price_one)
+            else:
+                price = price_one
 
             item_list.append({
                 "store": "s11",
                 "image": "https://www.7-eleven.co.kr" + image,
                 "title": title,
-                "price": 0,
+                "price": price,
                 "like": 0
             })
     sleep(1)
+    print("=== s11 scraping finish ===")
     return item_list
 
 
@@ -90,7 +108,6 @@ def scrap_cu(driver):
     item_list = []
     for i in range(1, 5):
         url = "https://cu.bgfretail.com/product/product.do?category=product&depth2=4&depth3=%d" % i
-
         driver.get(url)
         sleep(2)
         driver.execute_script("setCond('setC');")  # 최신순 정렬
@@ -101,9 +118,14 @@ def scrap_cu(driver):
         items = soup.select(".prod_wrap")
 
         for item in items:
-            image = item.select_one(".prod_img > img")["src"]
-            title = item.select_one(".prod_text > .name").text
-            price = item.select_one(".prod_text > .price").text
+            image = item.select_one("div.prod_img > img")["src"]
+            title = item.select_one("div.prod_text > div.name > p").text
+            price_one = item.select_one("div.prod_text > div.price > strong").text
+            if type("str") == type(price_one):
+                price = locale.atoi(price_one)
+            else:
+                price = price_one
+
             item_list.append({
                 "store": "cu",
                 "image": "http:" + image,
@@ -112,6 +134,7 @@ def scrap_cu(driver):
                 "like": 0
             })
         sleep(1)
+    print("=== cu scraping finish ===")
     return item_list
 
 
@@ -124,13 +147,4 @@ def scrap_items():
 
 
 def scheduling():
-    scrap_items()
     schedule.every(1).monday.at("00:00").do(scrap_items)
-
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
-
-
-if __name__ == '__main__':
-    scheduling()

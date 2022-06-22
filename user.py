@@ -1,18 +1,21 @@
 from pymongo import MongoClient
-import jwt
-import datetime
-import hashlib
 from flask import Flask, render_template, jsonify, request, redirect, url_for, Blueprint
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
+import jwt
+import hashlib
+import secret
 
 blue_user = Blueprint("user", __name__)
 
+key_list = {
+    'MongoKey': secret.mongo_db_key,
+    'SECRET_KEY': secret.jWT_KEY
+}
 
-SECRET_KEY = 'SPARTA'
-
-client = MongoClient('mongodb+srv://yongchan:qwerty12@cluster0.hr7ebks.mongodb.net/?retryWrites=true&w=majority')
-db = client.dbsparta_project4
+SECRET_KEY = key_list['SECRET_KEY']
+client = MongoClient(key_list['MongoKey'])
+db = client.dbsparta
 
 
 @blue_user.route('/login')
@@ -32,7 +35,7 @@ def user(username):
         user_info = db.users.find_one({"username": username}, {"_id": False})
         return render_template('user/user.html', user_info=user_info, status=status)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
+        return redirect(url_for("."))
 
 
 @blue_user.route('/sign_in', methods=['POST'])
@@ -81,6 +84,13 @@ def check_dup():
     return jsonify({'result': 'success', 'exists': exists})
 
 
+@blue_user.route('/sign_out', methods=['POST'])
+def sign_out():
+    username_receive = request.form['username_give']
+    exists = bool(db.users.find_one({"username": username_receive}))
+    return jsonify({'result': 'success', 'exists': exists})
+
+
 @blue_user.route('/update_profile', methods=['POST'])
 def save_img():
     token_receive = request.cookies.get('mytoken')
@@ -97,8 +107,9 @@ def save_img():
             file = request.files["file_give"]
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
-            file_path = f"profile_pics/{username}.{extension}"
-            file.save("./static/" + file_path)
+            file_path = "profile_pics/"
+            print(username + "." + extension)
+            file.save("./static/" + file_path, username + "." + extension)
             new_doc["profile_pic"] = filename
             new_doc["profile_pic_real"] = file_path
         db.users.update_one({'username': payload['id']}, {'$set': new_doc})

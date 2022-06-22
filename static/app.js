@@ -4,6 +4,8 @@
  *  @Param lastId  - 스크롤 방식을 위한 가장 마지막 id를 반환
  *  @Param search  - 검색어
  */
+
+let lastIdOfItem;
 function get_items(store, sortKey, lastId, search) {
     $.ajax({
         type: 'GET',
@@ -15,10 +17,11 @@ function get_items(store, sortKey, lastId, search) {
             'search': search
         },
         success: function (response) {
-            let rows = JSON.parse(response['items'])
-            let count = JSON.parse(response['count'])
+            let rows = JSON.parse(response['items']);
+            let count = JSON.parse(response['count']);
+            lastIdOfItem = rows[rows.length - 1]['_id']['$oid'];
             for (const row of rows) {
-                let id = row['_id']
+                let id = row['_id']['$oid']
                 let title = row['title']
                 let price = row['price']
                 let image = row['image']
@@ -52,9 +55,15 @@ function search_item() {
         sortTag.classList.remove('pick')
     }
 
-    let search = $("#name_search").val()
-    $('.items').empty()
-    get_items("", "_id", '3d109c700000000000000000', search)
+    let search = $("#search_input").val()
+
+    if (search === "") {
+
+        $("#search_input").focus()
+    } else {
+        $('.items').empty();
+        get_items("", "_id", '3d109c700000000000000000', search)
+    }
 }
 
 function change_sort(sort) {
