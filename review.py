@@ -70,7 +70,7 @@ def update_like():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        # 좋아요 수 변경
+        # like collection에 넣기
         user_info = db.users.find_one({"username": payload["id"]})
         review_id_receive = request.form["review_id_give"]
         type_receive = request.form["type_give"]
@@ -92,14 +92,16 @@ def update_like():
 
 @blue_review.route('/review', methods=['DELETE'])
 def delete_review():
-    comment_id = request.form['comment_id']
-    comment_info = db.reviews.find_one({"_id": ObjectId(comment_id)})
+    review_id = request.form['review_id']
+    review_info = db.reviews.find_one({"_id": ObjectId(review_id)})
 
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
-    if comment_info['username'] == payload['id']:
-        res = db.reviews.delete_one({'_id': ObjectId(comment_id)})
+    if review_info['username'] == payload['id']:
+        res = db.reviews.delete_one({'_id': ObjectId(review_id)})
+        print(res.deleted_count)
+        print(res.raw_result)
         if res:
             return jsonify({'status': 200})
         else:
