@@ -22,10 +22,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <style>
         .myPic {
-            width: 700px;
-            height: 500px;
+            width: 300px;
+            height: 300px;
 
-            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('');
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
             background-position: center 30%;
             background-size: cover;
 
@@ -39,8 +39,20 @@
             margin: auto;
             margin-top: 25px;
         }
-    </style>
 
+        img {
+            width: 100%;
+            height: 100%;
+        }
+
+        button.delete {
+            display: none;
+        }
+
+        div.box:hover button.delete {
+            display: block;
+        }
+    </style>
 
     <script>
         function post() {
@@ -115,11 +127,16 @@
                                 }).then(() => {
                                     window.location.reload()
                                 });
+                            } else if (response['status'] == 401) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: ' 삭제권한이 없습니다.',
+                                });
                             } else {
                                 Swal.fire({
                                     icon: 'error',
                                     title: '삭제에 실패했습니다.',
-                                })
+                                });
                             }
                         }
                     })
@@ -149,11 +166,12 @@
                                                     <img class="is-rounded" src="/static/${review['profile_pic_real']}"
                                                          alt="Image">
                                                 </a>
+<strong>${review['profile_name']}</strong> <small>@${review['username']}</small> <small>${time_before}</small>
                                             </div>
                                             <div class="media-content">
                                                 <div class="content">
                                                     <p>
-                                                        <strong>${review['profile_name']}</strong> <small>@${review['username']}</small> <small>${time_before}</small>
+
                                                         <br>
                                                         ${review['comment']}
                                                     </p>
@@ -255,36 +273,7 @@
 
 <section class="section"></section>
 <section class="section">
-    <div id="post-box" class="container">
-        <div class="box">
-            <article class="media">
-                <div class="media-left">
-                    <a class="image is-64x64" href="#">
-                        <img class="is-rounded"
-                             src="{{ url_for('static', filename='image/profile_pics/basic_profile.png') }}" alt="Image">
-                    </a>
-                </div>
-                <div class="media-content">
-                    <div class="content">
-                        <p>
-                            <strong>홍길동</strong> <small>@username</small> <small>10분 전</small>
-                            <br>
-                            글을 적는 칸
-                        </p>
-                    </div>
-                    <nav class="level is-mobile">
-                        <div class="level-left">
-                            <a class="level-item is-sparta" aria-label="heart" onclick="toggle_like('', 'heart')">
-                                <span class="icon is-small"><i class="fa fa-heart"
-                                                               aria-hidden="true"></i></span>&nbsp;<span
-                                    class="like-num">2.7k</span>
-                            </a>
-                        </div>
-                    </nav>
-                </div>
-            </article>
-        </div>
-    </div>
+    <div id="post-box" class="container"></div>
 </section>
 </body>
 </html>

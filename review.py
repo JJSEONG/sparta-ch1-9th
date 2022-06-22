@@ -94,4 +94,22 @@ def delete_review():
         else:
             return jsonify({'status': 400})
     else:
+        return jsonify({'status': 401})
+
+
+@blue_review.route('/review', methods=['DELETE'])
+def reviews_by_username():
+    comment_id = request.form['comment_id']
+    comment_info = db.reviews.find_one({"_id": ObjectId(comment_id)})
+
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+
+    if comment_info['username'] == payload['id']:
+        res = db.reviews.delete_one({'_id': ObjectId(comment_id)})
+        if res:
+            return jsonify({'status': 200})
+        else:
+            return jsonify({'status': 400})
+    else:
         return jsonify("게시자만 삭제할 수 있습니다.")
