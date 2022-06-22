@@ -30,12 +30,17 @@ function get_items(store, sortKey, lastId, search) {
             let rows = JSON.parse(response['items']);
             remain_item_size = JSON.parse(response['count']);
             lastIdOfItem = rows[rows.length - 1]['_id']['$oid'];
+            if (remain_item_size < 12) {
+                $('#last-pointer').hide()
+            } else {
+                $('#last-pointer').show()
+            }
             for (const row of rows) {
-                let id = row['_id']['$oid']
-                let title = row['title']
-                let price = row['price']
-                let image = row['image']
-                let like = row['like']
+                let id = row['_id']['$oid'];
+                let title = row['title'];
+                let price = row['price'];
+                let image = row['image'];
+                let like = row['like'];
 
                 temp_html = `
                         <div class="item" onclick="location.href='item/${id}'">
@@ -48,8 +53,8 @@ function get_items(store, sortKey, lastId, search) {
                                 <p>♥ (${like})</p>
                             </div>
                         </div>
-                        `
-                $('.items').append(temp_html)
+                        `;
+                $('.items').append(temp_html);
             }
         },
         error: function (response) {
@@ -61,7 +66,7 @@ function get_items(store, sortKey, lastId, search) {
         },
         complete: function () {
             _scrollchk = false;
-            $(".loading").hide();
+            $('.loading').hide();
         }
     })
 }
@@ -126,17 +131,12 @@ const io = new IntersectionObserver((entries, observer) => {
         if (_scrollchk) return;
         observer.observe(document.getElementById('last-pointer'));
         get_items(storeVal, sortKeyVal, lastIdOfItem, searchVal)
-
-        if (remain_item_size < 12) {
-            io.unobserve(document.getElementById('last-pointer'));
-            sleep(3000)
-        }
     });
 });
 
 function like() {
     const like = document.querySelector('.like-btn')
-        like.addEventListener('click', () => {
-            alert('hello')
-        })
+    like.addEventListener('click', () => {
+        alert('hello')
+    })
 }

@@ -54,6 +54,11 @@
             display: block;
         }
 
+        .post-box .box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 
     <script>
@@ -61,7 +66,7 @@
             let comment = $("#textarea-post").val()
             let today = new Date().toISOString()
             let item_id = `{{ item['_id']|string }}`
-            if (comment.trim().length > 30) {
+            if (comment.trim().length > 15) {
                 $.ajax({
                     type: "POST",
                     url: "/review",
@@ -78,7 +83,7 @@
             } else {
                 Swal.fire({
                     icon: 'error',
-                    title: '30자 이상 입력해주세요.',
+                    title: '15자 이상 입력해주세요.',
                     showConfirmButton: false,
                     timer: 1100
                 });
@@ -114,7 +119,7 @@
             return count
         }
 
-        function delete_review(comment_id) {
+        function delete_review(review_id) {
             Swal.fire({
                 title: '삭제하시겠습니까?',
                 icon: 'warning',
@@ -129,7 +134,7 @@
                         type: "DELETE",
                         url: "/review",
                         data: {
-                            comment_id: comment_id,
+                            review_id: review_id,
                         },
                         success: function (response) {
                             if (response['status'] == 200) {
@@ -178,36 +183,41 @@
                             let class_heart = review['heart_by_me'] ? "fa-heart" : "fa-heart-o"
                             let count_heart = review['count_heart']
                             lastIdOfReview = review['_id']
-                            let html_temp = `<div class="box" id="${review["_id"]}"
-                                        <article class="media">
-                                            <div class="media-left">
-                                                <a class="image is-64x64" href="/user/${review['username']}">
-                                                    <img class="is-rounded" src="/static/${review['profile_pic_real']}"
-                                                         alt="Image">
-                                                </a>
-                                            <strong>${review['profile_name']}</strong> <small>@${review['username']}</small> <small>${time_before}</small>
-                                            </div>
-                                            <div class="media-content">
-                                                <div class="content">
-                                                    <p>
-                                                        <br>
-                                                        ${review['comment']}
-                                                    </p>
-                                                </div>
-                                                <nav class="level is-mobile">
-                                                    <div class="level-left">
-                                                        <a class="level-item is-sparta" aria-label="heart" onclick="toggle_like('${post['_id']}', 'heart')">
-                                                            <span class="icon is-small"><i class="fa ${class_heart}"
-                                                                                           aria-hidden="true"></i></span>&nbsp;<span class="like-num">${count_heart}</span>
-                                                        </a>
-                                                    </div>
-                                                    <div class="level-right">
-                                                        <button type="button" class="delete" onclick="delete_review('${review["_id"]}')">삭제</button>
-                                                    </div>
-                                                </nav>
-                                            </div>
-                                        </article>
-                                    </div>`
+                            let html_temp = `
+<div class="box" id="${review["_id"]}">
+    <article class="media">
+        <div class="media-left">
+            <a class="image is-64x64" href="/user/${review['username']}">
+                <img class="is-rounded" src="/static/${review['profile_pic_real']}"
+                     alt="Image">
+            </a>
+        </div>
+        <div class="comment-wrap">
+            <div class="comment-info">
+                <strong>${review['profile_name']}</strong> <small>@${review['username']}</small> <small>${time_before}</small>
+            </div>
+            <div class="media-content">
+                <div class="content">
+                    <p>
+                        <br>
+                        ${review['comment']}
+                    </p>
+                </div>
+                <nav class="level is-mobile">
+                    <div class="level-left">
+                        <a class="level-item is-sparta" aria-label="heart" onclick="toggle_like('${post['_id']}', 'heart')">
+                            <span class="icon is-small"><i class="fa ${class_heart}"
+                                                           aria-hidden="true"></i></span>&nbsp;<span class="like-num">${count_heart}</span>
+                        </a>
+                    </div>
+                    <div class="level-right">
+                        <button type="button" class="delete" onclick="delete_review('${review["_id"]}')">삭제</button>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </article>
+</div>`
                             $("#post-box").append(html_temp)
                         }
                     }
@@ -265,16 +275,11 @@
 </nav>
 <section class="section">
     <article class="media">
-        <figure class="media-left" style="align-self: center">
-            <a class="image is-32x32" href="#">
-                <img class="is-rounded" src="{{ url_for('static', filename='image/profile_pics/basic_profile.png') }}">
-            </a>
-        </figure>
         <div class="media-content">
             <div class="field">
                 <p class="control">
                     <textarea id="textarea-post" class="textarea"
-                              placeholder="리뷰를 남겨주세요!(30자 이상 입력해야 합니다.)"></textarea>
+                              placeholder="리뷰를 남겨주세요!(15자 이상 입력해야 합니다.)"></textarea>
                 </p>
             </div>
             <nav class="level is-mobile">
