@@ -11,8 +11,7 @@ let storeVal = ""
 let sortKeyVal = ""
 let searchVal = ""
 let _scrollchk = false;
-let item_size = 1000;
-
+let remain_item_size = Number.MAX_SAFE_INTEGER;
 
 function get_items(store, sortKey, lastId, search) {
     storeVal = store
@@ -29,7 +28,8 @@ function get_items(store, sortKey, lastId, search) {
         },
         success: function (response) {
             let rows = JSON.parse(response['items']);
-            item_size = JSON.parse(response['count']);
+            console.log("rows.length: " + rows.length)
+            remain_item_size = JSON.parse(response['count']);
             lastIdOfItem = rows[rows.length - 1]['_id']['$oid'];
             for (const row of rows) {
                 let id = row['_id']['$oid']
@@ -57,16 +57,12 @@ function get_items(store, sortKey, lastId, search) {
             console.log(response)
         },
         beforeSend: function () {
-            console.log("beforeSend")
             _scrollchk = true;
-            // $('.items').appendChild(skeleton.show());
             $('.loading').show();
         },
         complete: function () {
-            console.log("afterSend")
             _scrollchk = false;
             $(".loading").hide();
-            // skeleton.hide();
         },
     })
 }
@@ -124,7 +120,3 @@ function change_store(store) {
     storeVal = store;
     get_items(store, "_id", '3d109c700000000000000000', '')
 }
-
-
-
-

@@ -4,6 +4,7 @@ import time
 import jwt
 import schedule
 import items
+import review
 import user
 import secret
 import scraping
@@ -12,13 +13,14 @@ app = Flask(__name__)
 
 app.register_blueprint(items.blue_items)
 app.register_blueprint(user.blue_user)
+app.register_blueprint(review.blue_review)
 
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = "./static/image/profile_pics"
 
 key_list = {
     'MongoKey': secret.mongo_db_key,
-    'SECRET_KEY': secret.jWT_KEY
+    'SECRET_KEY': secret.JWT_KEY
 }
 
 SECRET_KEY = key_list['SECRET_KEY']

@@ -13,16 +13,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <!-- Font Awesome CSS -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/mystyle.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='/css/mystyle.css') }}" rel="stylesheet">
 
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    <script src="{{ url_for('static', filename='js/myjs.js')}}"><</script>
+    <script src="{{ url_for('static', filename='/js/myjs.js') }}"><</script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <style>
         .myPic {
-            width: 300px;
-            height: 300px;
+            width: 700px;
+            height: 500px;
 
             background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('');
             background-position: center 30%;
@@ -38,58 +39,16 @@
             margin: auto;
             margin-top: 25px;
         }
-
-        .myPic > img{
-            width: 100%;
-            height: 100%;
-        }
     </style>
 
+
     <script>
-        function toggle_like(post_id, type) {
-            console.log(post_id, type)
-            let $a_like = $(`#${post_id} a[aria-label='heart']`)
-            let $i_like = $a_like.find("i")
-            if ($i_like.hasClass("fa-heart")) {
-                $.ajax({
-                    type: "POST",
-                    url: "/update_like",
-                    data: {
-                        post_id_give: post_id,
-                        type_give: type,
-                        action_give: "unlike"
-                    },
-                    success: function (response) {
-                        console.log("unlike")
-                        $i_like.addClass("fa-heart-o").removeClass("fa-heart")
-                        $a_like.find("span.like-num").text(response["count"])
-                    }
-                })
-            } else {
-                $.ajax({
-                    type: "POST",
-                    url: "/update_like",
-                    data: {
-                        post_id_give: post_id,
-                        type_give: type,
-                        action_give: "like"
-                    },
-                    success: function (response) {
-                        console.log("like")
-                        $i_like.addClass("fa-heart").removeClass("fa-heart-o")
-                        $a_like.find("span.like-num").text(response["count"])
-                    }
-                })
-
-            }
-        }
-
         function post() {
             let comment = $("#textarea-post").val()
             let today = new Date().toISOString()
             $.ajax({
                 type: "POST",
-                url: "/posting",
+                url: "/review",
                 data: {
                     comment_give: comment,
                     date_give: today
@@ -129,50 +88,74 @@
             return count
         }
 
-        function delete_post(comment_id) {
-            $.ajax({
-                type: "POST",
-                url: "/delete",
-                data: {
-                    comment_id: comment_id,
-                },
-                success: function (response) {
-                    alert(response["msg"])
-                    window.location.reload()
+        function delete_review(comment_id) {
+            Swal.fire({
+                title: '삭제하시겠습니까?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '삭제',
+                cancelButtonText: '취소'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: "/review",
+                        data: {
+                            comment_id: comment_id,
+                        },
+                        success: function (response) {
+                            if (response['status'] == 200) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '삭제성공.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    window.location.reload()
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '삭제에 실패했습니다.',
+                                })
+                            }
+                        }
+                    })
                 }
             })
         }
-
 
         function get_posts() {
             $("#post-box").empty()
             $.ajax({
                 type: "GET",
-                url: "/get_posts",
+                url: "/reviews",
                 data: {},
                 success: function (response) {
                     if (response["result"] == "success") {
-                        let posts = response["posts"]
-                        for (let i = 0; i < posts.length; i++) {
-                            let post = posts[i]
-                            let time_post = new Date(post["date"])
+                        let reviews = response["reviews"]
+                        for (let i = 0; i < reviews.length; i++) {
+                            let review = reviews[i]
+                            let time_post = new Date(review["date"])
                             let time_before = time2str(time_post)
-                            let class_heart = post['heart_by_me'] ? "fa-heart" : "fa-heart-o"
-                            let count_heart = post['count_heart']
-                            let html_temp = `<div class="box" id="${post["_id"]}"
+                            let class_heart = review['heart_by_me'] ? "fa-heart" : "fa-heart-o"
+                            let count_heart = review['count_heart']
+                            let html_temp = `<div class="box" id="${review["_id"]}"
                                         <article class="media">
                                             <div class="media-left">
-                                                <a class="image is-64x64" href="/user/${post['username']}">
-                                                    <img class="is-rounded" src="/static/${post['profile_pic_real']}"
+                                                <a class="image is-64x64" href="/user/${review['username']}">
+                                                    <img class="is-rounded" src="/static/${review['profile_pic_real']}"
                                                          alt="Image">
                                                 </a>
                                             </div>
                                             <div class="media-content">
                                                 <div class="content">
                                                     <p>
-                                                        <strong>${post['profile_name']}</strong> <small>@${post['username']}</small> <small>${time_before}</small>
+                                                        <strong>${review['profile_name']}</strong> <small>@${review['username']}</small> <small>${time_before}</small>
                                                         <br>
-                                                        ${post['comment']}
+                                                        ${review['comment']}
                                                     </p>
                                                 </div>
                                                 <nav class="level is-mobile">
@@ -183,7 +166,7 @@
                                                         </a>
                                                     </div>
                                                     <div class="level-right">
-                                                        <button type="button" class="delete" onclick="delete_post('${post["_id"]}')">삭제</button>
+                                                        <button type="button" class="delete" onclick="delete_review('${review["_id"]}')">삭제</button>
                                                     </div>
                                                 </nav>
                                             </div>
@@ -196,27 +179,25 @@
             })
         }
 
-
         $(document).ready(function () {
             get_posts()
         })
     </script>
+
 </head>
 <body>
-{% include'layout/header.html' %}
 <div class="myPic">
     <img src="{{ item['image'] }}" alt="">
 </div>
 <section class="section is-small">
-    <h1 class="title">제품명 : {{ item['title'] }}</h1>
+    <h1 class="title">{{ item['title'] }}</h1>
     <h2 class="subtitle">
-        제품 가격 : {{ item['price'] }}원
+        제품 가격: {{ item['price'] }}원
     </h2>
 </section>
 <nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a class="navbar-item" href="/">
-            <img src="{{ url_for('static', filename='logo.png') }}">
             <strong class="is-sparta"
                     style="font-family: 'Stylish', sans-serif;font-size: larger;">HAMUBARA</strong>
         </a>
@@ -226,7 +207,7 @@
     <article class="media">
         <figure class="media-left" style="align-self: center">
             <a class="image is-32x32" href="#">
-                <img class="is-rounded" src="{{ url_for('static', filename='profile_pics/profile_placeholder.png') }}">
+                <img class="is-rounded" src="{{ url_for('static', filename='image/profile_pics/basic_profile.png') }}">
             </a>
         </figure>
         <div class="media-content">
@@ -272,8 +253,7 @@
     </div>
 </section>
 
-<section class="section">
-</section>
+<section class="section"></section>
 <section class="section">
     <div id="post-box" class="container">
         <div class="box">
@@ -281,7 +261,7 @@
                 <div class="media-left">
                     <a class="image is-64x64" href="#">
                         <img class="is-rounded"
-                             src="{{ url_for('static', filename='profile_pics/profile_placeholder.png') }}" alt="Image">
+                             src="{{ url_for('static', filename='image/profile_pics/basic_profile.png') }}" alt="Image">
                     </a>
                 </div>
                 <div class="media-content">
@@ -300,12 +280,10 @@
                                     class="like-num">2.7k</span>
                             </a>
                         </div>
-
                     </nav>
                 </div>
             </article>
         </div>
-
     </div>
 </section>
 </body>

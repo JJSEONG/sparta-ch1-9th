@@ -44,16 +44,17 @@
             entries.forEach(entry => {
                 if (!entry.isIntersecting) return;
                 if (_scrollchk) return;
-                console.log("observe!")
                 observer.observe(document.getElementById('last-pointer'));
                 get_items(storeVal, sortKeyVal, lastIdOfItem, searchVal)
-                if (item_size === 0) {
+
+                if (remain_item_size < 12) {
+                    console.log("less then 12 remain... " + remain_item_size)
                     io.unobserve(document.getElementById('last-pointer'));
-                } else {
-                    if (item_size <= 12) {
-                        io.unobserve(document.getElementById('last-pointer'));
-                    }
+                    console.log('stop observer')
+                    sleep(3000)
                 }
+
+
             });
         });
     </script>

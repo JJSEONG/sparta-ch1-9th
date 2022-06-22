@@ -1,19 +1,25 @@
 from pymongo import MongoClient
+import jwt
+import datetime
+import hashlib
+import secret
 from flask import Flask, render_template, jsonify, request, redirect, url_for, Blueprint
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
-import jwt
-import hashlib
-import secret
 
 blue_user = Blueprint("user", __name__)
 
 key_list = {
     'MongoKey': secret.mongo_db_key,
-    'SECRET_KEY': secret.jWT_KEY
+    'SECRET_KEY': secret.JWT_KEY,
+    'JWT_ACCESS_EXPIRES': secret.JWT_ACCESS_EXPIRES,
+    'JWT_REFRESH_EXPIRES': secret.JWT_REFRESH_EXPIRES
 }
 
 SECRET_KEY = key_list['SECRET_KEY']
+ACCESS_EXPIRES = key_list['JWT_ACCESS_EXPIRES']
+REFRESH_EXPIRES = key_list['JWT_REFRESH_EXPIRES']
+
 client = MongoClient(key_list['MongoKey'])
 db = client.dbsparta
 
@@ -70,7 +76,7 @@ def sign_up():
         "password": password_hash,  # 비밀번호
         "profile_name": username_receive,  # 프로필 이름 기본값은 아이디
         "profile_pic": "",  # 프로필 사진 파일 이름
-        "profile_pic_real": "image/profile_pics/profile_placeholder.png",  # 프로필 사진 기본 이미지
+        "profile_pic_real": "image/profile_pics/basic_profile.png",  # 프로필 사진 기본 이미지
         "profile_info": ""  # 프로필 한 마디
     }
     db.users.insert_one(doc)

@@ -31,48 +31,25 @@ def get_items():
 
 
 def get_items_all(key, last_id, search_keyword):
-    count= itemCollection.count_documents({"title": {"$regex": search_keyword}})
     item_list = list(itemCollection.find({"_id": {"$gt": ObjectId(last_id)},
                                           "title": {"$regex": search_keyword}})
                      .sort(key)
                      .limit(12))
-    return {'items': dumps(item_list), "count": count}
-
-
-def get_count_all(search_keyword):
-    count = itemCollection.count_documents({"title": {"$regex": search_keyword}})
-    return {"count": count}
+    return {'items': dumps(item_list), "count": len(item_list)}
 
 
 def get_items_by_store(store, key, last_id):
-    count = itemCollection.count_documents({"store": store})
     item_list = list(itemCollection.find({"_id": {"$gt": ObjectId(last_id)},
                                           "store": store})
                      .sort(key)
                      .limit(12))
-    return {'items': dumps(item_list), "count": count}
-
-
-def get_counts_by_store(store):
-    count = itemCollection.count_documents({"store": store})
-    return {"count": count}
-
-
-@blue_items.route('/items/count')
-def get_count():
-    store = request.args.get('store')
-    search = request.args.get('search')
-    if len(store) < 1:
-        item_collection = get_count_all(search)
-    else:
-        item_collection = get_counts_by_store(store)
-
-    return jsonify(item_collection)
+    return {'items': dumps(item_list), "count": len(item_list)}
 
 
 @blue_items.route('/items/like')
 def like():
     return
+
 
 @blue_items.route('/item/<item_id>')
 def get_item(item_id):
