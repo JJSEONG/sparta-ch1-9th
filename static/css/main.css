@@ -205,6 +205,7 @@ header h1 {
     margin: 20px;
     border-radius: 20px;
     overflow: hidden;
+    background-color: transparent;
 }
 
 .item-list .items .item:hover {
@@ -213,15 +214,23 @@ header h1 {
     transition: 1s;
 }
 
-.item-list .items .item img {
+.item-list .items .item .item-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.item-list .items .item .item-wrap img {
     height: 140px;
     margin: 20px;
 }
 
-.item-list .items .item .item-info {
+.item-list .items .item .item-wrap .item-info {
     width: 100%;
     height: 100%;
-    padding: 5px;
     background-color: rgba(0, 0, 0, 0.4);
     display: flex;
     flex-direction: column;
@@ -229,12 +238,12 @@ header h1 {
     align-items: center;
 }
 
-.item-list .items .item .item-info p:first-child {
+.item-list .items .item .item-wrap .item-info p:first-child {
     font-size: 16px;
     font-weight: bold;
 }
 
-.item-list .items .item .item-info p:last-child {
+.item-list .items .item .item-wrap .item-info p:last-child {
     font-size: 14px;
 }
 
@@ -293,6 +302,15 @@ header h1 {
     display: inline-block;
     transform: rotate(-90deg) translateX(2px);
     margin-left: 10px;
+}
+
+.like-btn > p > .fa-heart {
+    color: red;
+    margin-right: 4px;
+}
+
+.like-btn > p > .fa-heart-o {
+    margin-right: 4px;
 }
 
 @keyframes skeleton-gradient {

@@ -43,19 +43,53 @@ function get_items(store, sortKey, lastId, search) {
                 let like = row['like'];
 
                 temp_html = `
-                        <div class="item" onclick="location.href='item/${id}'">
-                            <img src="${image}" alt="">
-                            <div class="item-info">
-                                <p>${title}</p>
-                                <p>가격 : ${price} 원</p>
+                        <div class="item" id="${id}">
+                            <div class="item-wrap" onclick="location.href='item/${id}'">
+                                <div class="item-img">
+                                    <img src="${image}" alt="">
+                                </div>
+                                <div class="item-info">
+                                    <p>${title}</p>
+                                    <p>가격 : ${price} 원</p>
+                                </div>
                             </div>
-                            <div class="like-btn" onclick="like()">
-                                <p>♥ (${like})</p>
+                            <div class="like-btn">
+                                <p><i class="fa fa-heart-o" aria-hidden="true"></i>(<span>${like}</span>)</p>
                             </div>
                         </div>
-                        `;
-                $('.items').append(temp_html);
+                        `
+                $('.items').append(temp_html)
             }
+            document.querySelector('.item-list')
+                .addEventListener('click', (e) => {
+                    if ($(e.target).has('like_btn')) {
+                        let item = findId(e.target)
+                        $.ajax({
+                            type: 'POST',
+                            url: '/items/like',
+                            data: {
+                                'item_id': item.id
+                            },
+                            success: function (response) {
+                                if (response['result'] === "success") {
+                                    let result = response['inc'];
+                                    console.log(item.querySelector('.like-btn > p > span'))
+                                    let likeCount = parseInt(item.querySelector('.like-btn > p > span').innerHTML)
+                                    if (result === 1) {
+                                        likeCount += 1;
+                                        item.querySelector('.like-btn > p > span').innerHTML = likeCount
+                                    } else {
+                                        likeCount -= 1;
+                                        item.querySelector('.like-btn > p > span').innerHTML = likeCount
+                                    }
+                                    check_like_items();
+                                }
+                            }
+                        });
+                    } else {
+                    }
+                });
+            check_like_items()
         },
         error: function (response) {
             console.log(response)
@@ -134,9 +168,40 @@ const io = new IntersectionObserver((entries, observer) => {
     });
 });
 
-function like() {
-    const like = document.querySelector('.like-btn')
-    like.addEventListener('click', () => {
-        alert('hello')
-    })
+function check_like_items() {
+    $.ajax({
+        type: 'GET',
+        url: '/user/like_items',
+        data: {},
+        success: function (response) {
+            let itemlist = response['item_list']['item_list']
+            let itemElements = document.getElementsByClassName('item');
+            for (const itemElement of itemElements) {
+                if (itemlist.includes(itemElement.id)) {
+                    let icon = itemElement.getElementsByTagName('i')[0];
+                    icon.classList.remove('fa-heart-o');
+                    icon.classList.add('fa-heart');
+                } else {
+                    let icon = itemElement.getElementsByTagName('i')[0];
+                    icon.classList.remove('fa-heart');
+                    icon.classList.add('fa-heart-o');
+                }
+            }
+        }
+    });
+}
+
+function findId(element) {
+    let tagName = element.tagName
+    switch (tagName) {
+        case 'DIV':
+            return element.parentNode;
+        case 'P':
+            return element.parentNode.parentNode
+        case 'I':
+            return element.parentNode.parentNode.parentNode;
+        case 'SPAN':
+            return element.parentNode.parentNode.parentNode;
+        default:
+    }
 }
