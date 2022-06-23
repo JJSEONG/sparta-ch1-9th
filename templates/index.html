@@ -30,6 +30,35 @@
         $(document).ready(function () {
             get_items("", "_id", '3d109c700000000000000000', '');
             io.observe(document.getElementById('last-pointer'))
+
+            document.querySelector('.item-list')
+                .addEventListener('click', (e) => {
+                    if ($(e.target).has('like_btn')) {
+                        let item = findId(e.target)
+                        $.ajax({
+                            type: 'POST',
+                            url: '/items/like',
+                            data: {
+                                'item_id': item.id
+                            },
+                            success: function (response) {
+                                if (response['result'] === "success") {
+                                    let inc = response['inc'];
+                                    let likeCount = parseInt(item.querySelector('.like-btn > p > span').innerHTML)
+                                    if (inc === 1) {
+                                        likeCount += 1;
+                                        item.querySelector('.like-btn > p > span').innerHTML = likeCount
+                                    } else if (inc === 0) {
+                                        likeCount -= 1;
+                                        item.querySelector('.like-btn > p > span').innerHTML = likeCount
+                                    }
+                                    check_like_items();
+                                }
+                            }
+                        });
+                    } else {
+                    }
+                });
         });
     </script>
 </head>

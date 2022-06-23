@@ -47,7 +47,7 @@ def get_items_all(key, last_id, search_keyword):
                          .limit(12))
 
     else:
-        print(key)
+
         item_list = list(itemCollection.find({"_id": {"$gt": ObjectId(last_id)},
                                               "title": {"$regex": search_keyword}},
                                              {'store': 1,
@@ -58,8 +58,6 @@ def get_items_all(key, last_id, search_keyword):
                                               'review_count': {'$size': "$reviews"}})
                          .sort(key, -1)
                          .limit(12))
-        print('get_items_all by else')
-        print(item_list)
     return {'items': dumps(item_list), "count": len(item_list)}
 
 
@@ -131,6 +129,13 @@ def user_like_list():
 def get_item(item_id):
     item = itemCollection.find_one({"_id": {"$eq": ObjectId(item_id)}})
     return render_template("item.html", item=item)
+
+
+@blue_items.route('/itemInfo', methods=["GET"])
+def get_item_info_json():
+    item_id = request.args.get('item_id')
+    item = itemCollection.find_one({"_id": {"$eq": ObjectId(item_id)}})
+    return jsonify({"status": "200", "item_info": dumps(item)})
 
 
 def add_review(item_id, review_id):

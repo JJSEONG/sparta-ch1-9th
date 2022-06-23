@@ -59,6 +59,19 @@
             justify-content: center;
             align-items: center;
         }
+
+        .content p {
+            width: 100%;
+            word-break: break-all;
+        }
+
+        .comment-wrap {
+            width: 100%;
+        }
+
+        .level.is-mobile {
+            width: 100%;
+        }
     </style>
 
     <script>
@@ -66,12 +79,14 @@
             let comment = $("#textarea-post").val()
             let today = new Date().toISOString()
             let item_id = `{{ item['_id']|string }}`
+            let item_name = `{{ item['title']|string }}`
             if (comment.trim().length > 15) {
                 $.ajax({
                     type: "POST",
                     url: "/review",
                     data: {
                         'item_id': item_id,
+                        'item_name': item_name,
                         'comment_give': comment,
                         'date_give': today
                     },

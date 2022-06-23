@@ -60,35 +60,6 @@ function get_items(store, sortKey, lastId, search) {
                         `
                 $('.items').append(temp_html)
             }
-            document.querySelector('.item-list')
-                .addEventListener('click', (e) => {
-                    if ($(e.target).has('like_btn')) {
-                        let item = findId(e.target)
-                        $.ajax({
-                            type: 'POST',
-                            url: '/items/like',
-                            data: {
-                                'item_id': item.id
-                            },
-                            success: function (response) {
-                                if (response['result'] === "success") {
-                                    let result = response['inc'];
-                                    console.log(item.querySelector('.like-btn > p > span'))
-                                    let likeCount = parseInt(item.querySelector('.like-btn > p > span').innerHTML)
-                                    if (result === 1) {
-                                        likeCount += 1;
-                                        item.querySelector('.like-btn > p > span').innerHTML = likeCount
-                                    } else {
-                                        likeCount -= 1;
-                                        item.querySelector('.like-btn > p > span').innerHTML = likeCount
-                                    }
-                                    check_like_items();
-                                }
-                            }
-                        });
-                    } else {
-                    }
-                });
             check_like_items()
         },
         error: function (response) {
@@ -132,19 +103,10 @@ function change_sort(sort) {
     for (const sortTag of sortTags) {
         sortTag.classList.remove('pick')
     }
-
     $(`#${sort}`).addClass("pick");
-    let stores = $('#stores').children();
-    let storeName = "";
-    for (const store of stores) {
-        if (store.className === "pick") {
-            storeName = store.id
-            break;
-        }
-    }
     $('.items').empty()
     sortKeyVal = sort;
-    get_items(storeName, sort, '3d109c700000000000000000', '')
+    get_items(storeVal, sort, '3d109c700000000000000000', '')
 }
 
 function change_store(store) {
@@ -205,3 +167,60 @@ function findId(element) {
         default:
     }
 }
+
+function sign_out() {
+    $.removeCookie('mytoken', {path: '/'});
+    Swal.fire({
+        icon: 'success',
+        title: '로그아웃되었습니다.',
+        showConfirmButton: false,
+        timer: 1500
+    }).then((result) => {
+        window.location.href = "/login"
+    })
+}
+
+function delete_review(review_id) {
+    Swal.fire({
+        title: '삭제하시겠습니까?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '삭제',
+        cancelButtonText: '취소'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: "DELETE",
+                url: "/review",
+                data: {
+                    review_id: review_id,
+                },
+                success: function (response) {
+                    if (response['status'] == 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '삭제성공.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            window.location.reload()
+                        });
+                    } else if (response['status'] == 401) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: ' 삭제권한이 없습니다.',
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '삭제에 실패했습니다.',
+                        });
+                    }
+                }
+            })
+        }
+    })
+}
+

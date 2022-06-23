@@ -28,13 +28,15 @@ def reviewing():
         comment_receive = request.form["comment_give"]
         date_receive = request.form["date_give"]
         item_id = request.form['item_id']
+        item_name = request.form['item_name']
         doc = {
             "username": user_info["username"],
             "profile_name": user_info["profile_name"],
             "profile_pic_real": user_info["profile_pic_real"],
             "comment": comment_receive,
             "date": date_receive,
-            "item_id": item_id
+            "item_id": item_id,
+            "item_name": item_name
         }
         review_id = db.reviews.insert_one(doc)
         add_review(item_id, str(review_id.inserted_id))
@@ -59,7 +61,8 @@ def get_reviews():
         for review in reviews:
             review["_id"] = str(review["_id"])
             review["count_heart"] = db.likes.count_documents({"review_id": review["_id"], "type": "heart"})
-            review["heart_by_me"] = bool(db.likes.find_one({"review_id": review["_id"], "type": "heart", "username": payload['id']}))
+            review["heart_by_me"] = bool(
+                db.likes.find_one({"review_id": review["_id"], "type": "heart", "username": payload['id']}))
         return jsonify({"result": "success", "msg": "포스팅을 가져왔습니다.", "reviews": reviews, "size": len(reviews)})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
@@ -100,8 +103,6 @@ def delete_review():
 
     if review_info['username'] == payload['id']:
         res = db.reviews.delete_one({'_id': ObjectId(review_id)})
-        print(res.deleted_count)
-        print(res.raw_result)
         if res:
             return jsonify({'status': 200})
         else:
@@ -118,6 +119,23 @@ def reviews_by_username():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         username = payload['id']
         reviews = list(db.reviews.find({"username": {"$eq": username}})
+                       .sort('date', -1)
+                       .limit(5))
+        return jsonify({"result": "success", "reviews": dumps(reviews), "count": len(reviews)})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return jsonify({"result": "fail"})
+
+
+@blue_review.route('/myReviews/itemname', methods=['GET'])
+def reviews_by_item_name():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        username = payload['id']
+        item_name = request.args.get('item_name')
+
+        reviews = list(db.reviews.find({"username": {"$eq": username},
+                                        "item_name": {"$regex": item_name}})
                        .sort('date', -1)
                        .limit(5))
         return jsonify({"result": "success", "reviews": dumps(reviews), "count": len(reviews)})
