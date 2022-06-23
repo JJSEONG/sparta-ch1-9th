@@ -73,7 +73,7 @@ def get_items_by_store(store, key, last_id):
                                               'price': 1,
                                               'like': 1,
                                               'array': -1,
-                                              'review_count': {'$size': "$array"}})
+                                              'review_count': {'$size': "$reviews"}})
                          .sort(key, 1)
                          .limit(12))
     else:
@@ -85,7 +85,7 @@ def get_items_by_store(store, key, last_id):
                                               'price': 1,
                                               'like': 1,
                                               'array': -1,
-                                              'review_count': {'$size': "$array"}})
+                                              'review_count': {'$size': "$reviews"}})
                          .sort(key, -1)
                          .limit(12))
     return {'items': dumps(item_list), "count": len(item_list)}
