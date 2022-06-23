@@ -14,6 +14,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
     <script src="/static/app.js"></script>
     <script src="/static/js/loading.js"></script>
@@ -21,26 +23,14 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/main.css">
+
+
     <title>함무봐라 법전</title>
     <script>
         $(document).ready(function () {
             get_items("", "_id", '3d109c700000000000000000', '');
             io.observe(document.getElementById('last-pointer'))
         });
-
-        function sign_out() {
-            $.removeCookie('mytoken', {path: '/'});
-            Swal.fire({
-                icon: 'success',
-                title: '로그아웃되었습니다.',
-                showConfirmButton: false,
-                timer: 1500
-            }).then((result) => {
-                window.location.href = "/login"
-            })
-        }
-
-
     </script>
 </head>
 <body>
@@ -67,7 +57,7 @@
         </ul>
         <div id="sort" class="sort">
             <span id="_id" onclick="change_sort('_id')">신제품 순</span>
-            <span id="review" onclick="change_sort('review')">리뷰 많은 순</span>
+            <span id="review_count" onclick="change_sort('review_count')">리뷰 많은 순</span>
             <span id="like" onclick="change_sort('like')">좋아요 순</span>
         </div>
         <div class="items"></div>
