@@ -14,11 +14,16 @@
     <meta property="og:title" content="함무바라 법전 - 세상을 맛있게"/>
     <meta property="og:description" content="mini project for Web Plus"/>
     <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+
     <!-- Font Awesome CSS -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
     <link href="{{ url_for('static', filename='/css/mystyle.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='/css/main.css') }}" rel="stylesheet">
+
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
@@ -60,6 +65,7 @@
             form_data.append("name_give", name)
             form_data.append("about_give", about)
 
+            console.log(name, file, about)
             $.ajax({
                 type: "POST",
                 url: "/update_profile",
@@ -308,39 +314,32 @@
                             <div class="media-content">
                                 <div class="field">
                                     <label class="label" for="input-name">이름</label>
-
                                     <p class="control">
-
                                         <input id="input-name" class="input"
-                                               placeholder="홍길동" value="{{ user_info.profile_name }}">
+                                               placeholder="닉네임 입력" value="{{ user_info.profile_name }}">
                                     </p>
                                 </div>
                                 <div class="field">
                                     <label class="label" for="input-pic">프로필 사진</label>
-
                                     <div class="control is-expanded">
                                         <div class="file has-name">
                                             <label class="file-label" style="width:100%">
-                                                <input id="input-pic" class="file-input" type="file"
-                                                       name="resume">
-                                                <span class="file-cta"><span class="file-icon"><i
-                                                        class="fa fa-upload"></i></span>
-                                <span class="file-label">파일 선택</span>
-                            </span>
+                                                <input id="input-pic" class="file-input" type="file" name="resume">
+                                                <span class="file-cta">
+                                                    <span class="file-icon"><i class="fa fa-upload"></i></span>
+                                                    <span class="file-label">사진 선택</span>
+                                                </span>
                                                 <span id="file-name" class="file-name"
                                                       style="width:100%;max-width:100%">{{ user_info.profile_pic }}</span>
                                             </label>
                                         </div>
-
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label class="label" for="textarea-about">나는 누구?</label>
-
                                     <p class="control">
-
-                        <textarea id="textarea-about" class="textarea"
-                                  placeholder="자기소개하기">{{ user_info.profile_info }}</textarea>
+                                    <textarea id="textarea-about" class="textarea"
+                                        placeholder="자기소개하기">{{ user_info.profile_info }}</textarea>
                                     </p>
                                 </div>
                                 <nav class="level is-mobile">
@@ -369,7 +368,7 @@
 </section>
 <section class="section">
     <div class="search">
-        <p>리뷰 검색</p>
+        <p style="width: 100px">검색</p>
         <input id="search_input" type="text" onkeypress="if(window.event.keyCode==13){search_by_item_name()}"
                placeholder="찾고 싶은 상품명을 검색해주세요">
         <button type="button" onclick="search_by_item_name()" class="btn btn-primary">검색</button>

@@ -1,4 +1,7 @@
+from pathlib import Path
+
 from pymongo import MongoClient
+import os
 import jwt
 import datetime
 import hashlib
@@ -121,8 +124,8 @@ def save_img():
             file = request.files["file_give"]
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
-            file_path = "image/profile_pics/"
-            file.save("./static/" + file_path, username + "." + extension)
+            file_path = f"profile_pics/{username}.{extension}"
+            file.save("./static/image/" + file_path)
             new_doc["profile_pic"] = filename
             new_doc["profile_pic_real"] = file_path
         db.users.update_one({'username': payload['id']}, {'$set': new_doc})
